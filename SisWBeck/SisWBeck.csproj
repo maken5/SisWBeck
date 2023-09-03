@@ -60,6 +60,9 @@
 	  <MauiXaml Update="Views\ConfiguracaoPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\PesagemPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	</ItemGroup>
 
 	<PropertyGroup Label="MauiAppAccelerator">

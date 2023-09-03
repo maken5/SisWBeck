@@ -6,9 +6,11 @@ namespace SisWBeck.ViewModels;
 
 public partial class MainViewModel : BaseViewModel
 {
+    private IDialogServicePesagem dialogServicePesagem;
 
-    public MainViewModel(SISWBeckContext context, IDialogService dialogService) : base(context, dialogService)
+    public MainViewModel(SISWBeckContext context, IDialogServicePesagem dialogService) : base(context, dialogService)
     {
+        this.dialogServicePesagem = dialogService; 
     }
 
     [RelayCommand]
@@ -43,6 +45,23 @@ public partial class MainViewModel : BaseViewModel
                 OnPropertyChanged(nameof(Lotes));
                 OnPropertyChanged(nameof(Lote));
             }
+        }
+        else
+        {
+            await dialogService.MessageError("Nenhum lote selecionado", "Selecione um lote para remover");
+        }
+    }
+
+    [RelayCommand]
+    public async Task Pesar()
+    {
+        if (Lote != null)
+        {
+            dialogServicePesagem.ShowPesagem(Lote);
+        }
+        else
+        {
+            await dialogService.MessageError("Nenhum lote selecionado", "Selecione um lote para efetuar pesagens");
         }
     }
 

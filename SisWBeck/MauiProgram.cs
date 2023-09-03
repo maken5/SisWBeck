@@ -22,14 +22,18 @@ public static class MauiProgram
 
 		builder.Services.AddDbContext<SISWBeckContext>(options => options.UseSqlite(Constantes.ConnectionString));
 
-		builder.Services.AddSingleton<IDialogService, DialogService>();
+		builder.Services.AddTransient<IDialogService, DialogService>();
+        builder.Services.AddTransient<IDialogServicePesagem, DialogService>();
 
-		builder.Services.AddSingleton<MainViewModel>();
+        builder.Services.AddSingleton<MainViewModel>();
 		builder.Services.AddSingleton<MainPage>();
 
-		builder.Services.AddSingleton<ConfiguracaoViewModel>();
-		builder.Services.AddSingleton<ConfiguracaoPage>();
+		builder.Services.AddTransient<ConfiguracaoViewModel>();
+		builder.Services.AddTransient<ConfiguracaoPage>();
 
-		return builder.Build();
+        builder.Services.AddTransient<PesagemViewModel>();
+        builder.Services.AddTransient<PesagemPage>();
+
+        return builder.Build();
 	}
 }
