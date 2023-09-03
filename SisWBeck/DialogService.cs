@@ -20,5 +20,10 @@ namespace SisWBeck
             bool? resposta = await Application.Current.MainPage.DisplayAlert(title, message, "SIM", "NÃO");
             return resposta ?? false;
         }
+
+        public async Task MessageError(string title, string message)
+        {
+            await Application.Current.MainPage.DisplayAlert(title, message, "OK");
+        }
     }
 }

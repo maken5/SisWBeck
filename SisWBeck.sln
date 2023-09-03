@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SisWBeck", "SisWBeck\SisWBe
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{957347DF-B7BF-41C3-A024-36BB49D5475F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modelo", "Core\Modelo\Modelo.csproj", "{C6611531-9B78-4968-AAF9-C147E248B359}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Modelo", "Core\Modelo\Modelo.csproj", "{C6611531-9B78-4968-AAF9-C147E248B359}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

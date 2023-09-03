@@ -9,5 +9,7 @@ namespace Modelo.Tipos
     {
         Task<string> InputDialog(string title, string message);
         Task<bool> InputAlert(string title, string message);
+
+        Task MessageError(string title, string message);
     }
 }

@@ -1,8 +1,6 @@
 ﻿using Modelo.Entidades;
 using Modelo.Tipos;
 using SisWBeck.DB;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 
 namespace SisWBeck.ViewModels;
 
@@ -20,7 +18,7 @@ public partial class MainViewModel : BaseViewModel
         if (!String.IsNullOrWhiteSpace(lote))
         {
             Lotes l = new Lotes() { Nome = lote };
-            context.Lotes.Add(l);
+            context.Add(l);
             await context.SaveChangesAsync();
             OnPropertyChanged(nameof(Lotes));
             OnPropertyChanged(nameof(Lote));
@@ -35,8 +33,13 @@ public partial class MainViewModel : BaseViewModel
             bool remover = await dialogService.InputAlert("Remover Lote?", $"Deseja remover o lote {Lote.Nome} criado em {Lote.Data}?");
             if (remover)
             {
-                context.Lotes.Remove(this.Lote);
-                await context.SaveChangesAsync(true);
+                try 
+                {
+                    context.Remove(this.Lote);
+                }catch (Exception ex)
+                {
+                    await dialogService.MessageError("Erro!", $"Não foi possível remover o lote {Lote.Nome}\r\n{ex.Message}");
+                }
                 OnPropertyChanged(nameof(Lotes));
                 OnPropertyChanged(nameof(Lote));
             }
