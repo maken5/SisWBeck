@@ -1,4 +1,7 @@
-﻿using SisWBeck.ViewModels;
+﻿using Microsoft.EntityFrameworkCore;
+using Modelo.Tipos;
+using SisWBeck.DB;
+using SisWBeck.ViewModels;
 using SisWBeck.Views;
 
 namespace SisWBeck;
@@ -16,6 +19,10 @@ public static class MauiProgram
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 			});
+
+		builder.Services.AddDbContext<SISWBeckContext>(options => options.UseSqlite(Constantes.ConnectionString));
+
+		builder.Services.AddSingleton<IDialogService, DialogService>();
 
 		builder.Services.AddSingleton<MainViewModel>();
 		builder.Services.AddSingleton<MainPage>();

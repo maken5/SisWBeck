@@ -10,9 +10,9 @@
     x:DataType="vm:ConfiguracaoViewModel"
     Shell.BackgroundColor="Red"
     mc:Ignorable="d">
-    <ContentPage.BindingContext>
+    <!--<ContentPage.BindingContext>
         <vm:ConfiguracaoViewModel />
-    </ContentPage.BindingContext>
+    </ContentPage.BindingContext>-->
     <ContentPage.Content>
         <StackLayout>
             <Label

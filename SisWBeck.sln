@@ -5,6 +5,10 @@ VisualStudioVersion = 17.6.33723.286
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SisWBeck", "SisWBeck\SisWBeck.csproj", "{55627675-BA1C-4818-9270-A442F520192C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{957347DF-B7BF-41C3-A024-36BB49D5475F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modelo", "Core\Modelo\Modelo.csproj", "{C6611531-9B78-4968-AAF9-C147E248B359}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,9 +21,16 @@ Global
 		{55627675-BA1C-4818-9270-A442F520192C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{55627675-BA1C-4818-9270-A442F520192C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{55627675-BA1C-4818-9270-A442F520192C}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{C6611531-9B78-4968-AAF9-C147E248B359}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6611531-9B78-4968-AAF9-C147E248B359}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6611531-9B78-4968-AAF9-C147E248B359}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6611531-9B78-4968-AAF9-C147E248B359}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C6611531-9B78-4968-AAF9-C147E248B359} = {957347DF-B7BF-41C3-A024-36BB49D5475F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {333D82C1-1512-4D0D-A051-580590D86EDF}
