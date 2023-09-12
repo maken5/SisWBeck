@@ -11,11 +11,126 @@
     mc:Ignorable="d">
     <ContentPage.Content>
         <StackLayout>
-            <Label
-                HorizontalOptions="Center"
-                Text="TEla de pesagem"
-                TextColor="Purple"
-                VerticalOptions="Center"/>
+            
+            <!-- Display de peso  -->
+            <Frame BorderColor="Black" 
+                   CornerRadius="10" 
+                   HasShadow="True"
+                   BackgroundColor="Green">
+                <Grid >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="100"/>
+                    </Grid.RowDefinitions>
+                    <FlexLayout HorizontalOptions="Center" JustifyContent="Center">
+                        <Label x:Name="Weight_Entry" 
+                               Text="-9999" 
+                               TextColor="Black"
+                               IsVisible="True"
+                               VerticalTextAlignment="End"
+                               HorizontalOptions="Center"
+                               FontSize="90"
+                               FontAttributes="Bold"/>
+                        <Label Text="Kg"
+                               TextColor="Black"
+                               IsVisible="True"
+                               HorizontalOptions="End"
+                               VerticalOptions="End"
+                               VerticalTextAlignment="End"
+                               HorizontalTextAlignment="End"
+                               FontSize="40"
+                               FontAttributes="Bold"/>
+                    </FlexLayout>
+                </Grid>
+            </Frame>
+
+            <!-- Identificação  -->
+            <Frame BorderColor="Black"
+                   HasShadow="True"
+                   CornerRadius="10"
+                   BackgroundColor="Gray">
+                <Entry x:Name="Code_Entry"
+                       Placeholder="BRINCO"
+                       BackgroundColor="Transparent"
+                       FontSize="20"
+                       Keyboard="Numeric"
+                       ClearButtonVisibility="WhileEditing"
+                       TextColor="Gray"
+                       Text=""
+                       />
+            </Frame>
+
+            <!-- Comandos
+            -->
+            <Frame BorderColor="Black"
+                   HasShadow="True"
+                   CornerRadius="10"
+                   BackgroundColor="Gray">
+                <FlexLayout HorizontalOptions="Center"
+                        JustifyContent="Center"
+                        VerticalOptions="Center"
+                        AlignItems="Center"
+                        AlignContent="Center">
+                    <Button CornerRadius="50"
+                            IsEnabled="True"
+                            Text="Ø"
+                            HeightRequest="50"
+                            VerticalOptions="Center"
+                            Margin="0,5,5,5"
+                            FontSize="25"
+                            FontAttributes="Bold"
+                            WidthRequest="150"
+                            BackgroundColor="LightGray"
+                            HorizontalOptions="Start"
+                            TextColor="Black"/>
+                    <Button CornerRadius="50"
+                            IsEnabled="True"
+                            Text="Salvar"
+                            HeightRequest="50"
+                            VerticalOptions="Center"
+                            Margin="0,5,5,5"
+                            FontSize="25"
+                            FontAttributes="Bold"
+                            WidthRequest="150"
+                            BackgroundColor="LightGray"
+                            HorizontalOptions="End"
+                            TextColor="Black"/>
+                </FlexLayout>
+            </Frame>
+
+            <ListView x:Name="Item_ListView"
+                      RowHeight="60"
+                      FlowDirection="RightToLeft"
+                      Rotation="180">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Orientation="Horizontal"
+                                         FlowDirection="LeftToRight"
+                                         VerticalOptions="Center"
+                                         Rotation="180">
+                                <Label Text="Codigo"
+                                       VerticalOptions="Center"
+                                       FontSize="Medium"
+                                       FontAttributes="Bold"
+                                       TextColor="Black"/>
+                                <Label Text="Data"
+                                       VerticalOptions="Center"
+                                       FontSize="Medium"
+                                       FontAttributes="Bold"
+                                       TextColor="Black"/>
+                                <Label Text="Peso"
+                                       VerticalOptions="Center"
+                                       FontSize="Medium"
+                                       FontAttributes="Bold"
+                                       TextColor="Black"/>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+                      
+        
+        
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
