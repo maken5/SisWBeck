@@ -16,19 +16,26 @@
         <Button Text="Configurações" Command="{Binding CmdConfiguracao}"/>
     </StackLayout>-->
 
-    <Grid>
+    <Grid BackgroundColor="White">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
 
         <dg:DataGrid Grid.Row="0" 
+                     BackgroundColor="White"
                      ItemsSource="{Binding Lotes}" 
                      SelectionEnabled="True"
                      SelectedItem="{Binding Lote}">
             <dg:DataGrid.Columns>
-                <dg:DataGridColumn Title="Lote" PropertyName="Nome" Width="80*" SortingEnabled="True"/>
-                <dg:DataGridColumn Title="Data" PropertyName="Data" Width="20*" SortingEnabled="True"/>
+                <dg:DataGridColumn Title="Lote" 
+                                   PropertyName="Nome" 
+                                   Width="80*" 
+                                   SortingEnabled="True"/>
+                <dg:DataGridColumn Title="Data" 
+                                   PropertyName="Data" 
+                                   Width="20*" 
+                                   SortingEnabled="True"/>
             </dg:DataGrid.Columns>
         </dg:DataGrid>
 
@@ -39,11 +46,50 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Text="+" Command="{Binding AdicionarLoteCommand}" Margin="3,3,3,3"/>
-            <Button Grid.Column="1" Text="Remover" Command="{Binding RemoverLoteCommand}" Margin="3,3,3,3" 
-                    IsVisible="{Binding Lote, Converter={StaticResource IsNotNullConverter}}"/>
-            <Button Grid.Column="2" Text="Exportar" Margin="3,3,3,3"/>
-            <Button Grid.Column="3" Text="Pesar" Command="{Binding PesarCommand}" Margin="3,3,3,3"/>
+            <Button Grid.Column="0" 
+                    Text="Novo" 
+                    FontSize="12"
+                    TextColor="Black"
+                    Command="{Binding AdicionarLoteCommand}" 
+                    BorderColor="Black"
+                    BackgroundColor="White"
+                    BorderWidth="2"
+                    ImageSource="plus.png"
+                    Padding="0,0,0,0"
+                    Margin="1,1,1,1"/>
+            <Button Grid.Column="1" 
+                    Text="Apagar" 
+                    FontSize="12"
+                    TextColor="Black"
+                    Command="{Binding RemoverLoteCommand}" 
+                    BorderColor="Black"
+                    BackgroundColor="White"
+                    BorderWidth="2"
+                    ImageSource="delete.png"
+                    Padding="0,0,0,0"
+                    Margin="1,1,1,1"/>
+            <Button Grid.Column="2" 
+                    Text="Share" 
+                    FontSize="12"
+                    TextColor="Black"
+                    BorderColor="Black"
+                    BackgroundColor="White"
+                    BorderWidth="2"
+                    ImageSource="share.png"
+                    Command="{Binding CompartilharLoteCommand}"
+                    Padding="0,0,0,0"
+                    Margin="1,1,1,1"/>
+            <Button Grid.Column="3" 
+                    Text="Abrir" 
+                    FontSize="12"
+                    TextColor="Black"
+                    Command="{Binding PesarCommand}" 
+                    BorderColor="Black"
+                    BackgroundColor="White"
+                    BorderWidth="2"
+                    ImageSource="ox.png"
+                    Padding="0,0,0,0"
+                    Margin="1,1,1,1"/>
         </Grid>
     </Grid>
     

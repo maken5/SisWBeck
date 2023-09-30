@@ -8,6 +8,7 @@ namespace Modelo.Entidades
     {
         public int Id { get; set; }
 
+        public int NrPesagem { get; set; }
         public string Codigo { get; set; }
         public DateTime Data { get; set; } = DateTime.Now;
         public int Peso { get; set; }

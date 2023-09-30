@@ -7,5 +7,10 @@
             InitializeComponent();
             BindingContext = viewModel;
         }
+
+
+        public void Teste()
+        {
+        }
     }
 }

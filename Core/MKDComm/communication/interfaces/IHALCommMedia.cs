@@ -26,5 +26,6 @@ namespace mkdInfo.communication.interfaces
         void open(KeyValuePair<Object, Object>[] parameter);
         bool close();
         void send(byte[] data);
+
     }
 }

@@ -14,12 +14,115 @@
         <vm:ConfiguracaoViewModel />
     </ContentPage.BindingContext>-->
     <ContentPage.Content>
-        <StackLayout>
-            <Label
-                HorizontalOptions="Center"
-                Text="Welcome to .NET MAUI!!!"
-                TextColor="Purple"
-                VerticalOptions="Center"/>
-        </StackLayout>
+        <Grid Margin="0">
+
+            <ScrollView >
+                <VerticalStackLayout VerticalOptions="StartAndExpand">
+
+                    <!-- Balança -->
+                    <Border BackgroundColor="White"
+                            Stroke="Black"
+                            StrokeThickness="1"
+                            Margin="1,1,1,1"
+                            StrokeShape="RoundRectangle 10,10,10,10"
+                            HeightRequest="280"
+                            VerticalOptions="Center">
+                        <VerticalStackLayout>
+                            <Image Source="/Images/logo_beckhauser.png"
+                                    VerticalOptions="FillAndExpand"
+                                    HorizontalOptions="FillAndExpand"
+                                    Margin="20,10,20,10"
+                                    HeightRequest="128"/>
+                            <BoxView BackgroundColor="Black" HeightRequest="5" Margin="20,0,20,0"/>
+                            <Label Text="SELECIONAR BALANÇA"
+                                    Margin="20,10,0,0"
+                                    x:Name="Scale_Label"
+                                    HorizontalOptions="StartAndExpand"
+                                    VerticalOptions="CenterAndExpand"
+                                    FontSize="Medium"
+                                    FontAttributes="Bold"
+                                    TextColor="Black"/>
+                            <Grid Margin="20,5,5,20"
+                                    HorizontalOptions="FillAndExpand"
+                                    VerticalOptions="FillAndExpand"
+                                    HeightRequest="70">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="8*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Stroke="Black"
+                                        StrokeShape="RoundRectangle 10,10,10,10"
+                                        HorizontalOptions="FillAndExpand"
+                                        VerticalOptions="FillAndExpand"
+                                        Margin="0,0,0,0"
+                                        Grid.Column="0">
+                                    <Picker x:Name="Scale_Picker"
+                                            VerticalOptions="StartAndExpand"
+                                            HorizontalOptions="Start"
+                                            FontSize="Medium"
+                                            Title="Dispositivos pareados"
+                                            Margin="5,0,0,0"
+                                            BackgroundColor="Transparent"/>
+                                </Border>
+                                <Button HorizontalOptions="End"
+                                        VerticalOptions="Center"
+                                        ImageSource="/Resources/Images/reload.png"
+                                        Scale="0.7"
+                                        Grid.Column="1"
+                                        BackgroundColor="White"
+                                        Margin="5,5,0,5"/>
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Border>
+
+
+                    <Border Stroke="Black"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 10,10,10,10">
+                        <Grid Margin="20,5,20,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="40"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <CheckBox Grid.Column="0"
+                                      HorizontalOptions="StartAndExpand"
+                                      Color="Red"
+                                      x:Name="NumericKeyboard_CheckBox"/>
+                            <Label Grid.Column="1"
+                                   VerticalOptions="Center"
+                                   HorizontalTextAlignment="Start"
+                                   Text="Utilizar apenas o teclado numérico para preencher o brinco"/>
+                        </Grid>
+                    </Border>
+
+                    <Border Stroke="Black"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 10,10,10,10">
+                        <Grid Margin="20,5,20,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="40"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <CheckBox Grid.Column="0"
+                                    HorizontalOptions="StartAndExpand"
+                                    Color="Red"
+                                    x:Name="Separator_CheckBox"/>
+                            <Label Grid.Column="1"
+                                    VerticalOptions="Center"
+                                    HorizontalTextAlignment="Start"
+                                    Text="Utilizar o caracter ';' como separador de campo do arquivo CSV"/>
+                        </Grid>
+                    </Border>
+
+                    <Button Margin="1,5,1,5"
+                            Text="Confirmar Configurações"
+                            BackgroundColor="Gray"
+                            Command="{Binding SaveCommand}"
+                            TextColor="Black"
+                            FontSize="Medium"
+                            FontAttributes="Bold"/>
+                </VerticalStackLayout>
+            </ScrollView>
+        </Grid>
     </ContentPage.Content>
 </ContentPage>

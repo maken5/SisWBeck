@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net6.0-maccatalyst;net6.0-android33.0</TargetFrameworks>
+		<TargetFrameworks>net6.0-maccatalyst;net7.0-android33.0</TargetFrameworks>
 		<OutputType>Exe</OutputType>
 		<RootNamespace>SisWBeck</RootNamespace>
 		<UseMaui>true</UseMaui>
@@ -45,6 +45,20 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Images\delete.png" />
+	  <None Remove="Resources\Images\ox.png" />
+	  <None Remove="Resources\Images\plus.png" />
+	  <None Remove="Resources\Images\settings.png" />
+	  <None Remove="Resources\Images\share.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Resource Include="Resources\Images\logo_beckhauser.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Resource>
+	</ItemGroup>
+
+	<ItemGroup>
 	  <PackageReference Include="akgul.Maui.DataGrid" Version="3.0.0" />
 	  <PackageReference Include="CommunityToolkit.Maui" Version="1.4.0" />
 	  <PackageReference Include="CommunityToolkit.MVVM" Version="8.2.0" />
@@ -53,6 +67,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\Core\LibHash\LibHash.csproj" />
+	  <ProjectReference Include="..\Core\MKDComm\MKDComm.csproj" />
 	  <ProjectReference Include="..\Core\Modelo\Modelo.csproj" />
 	</ItemGroup>
 
@@ -65,14 +81,26 @@
 	  </MauiXaml>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <MauiImage Include="Images\bar_chart.png" />
+	  <MauiImage Include="Images\delete.png" />
+	  <MauiImage Include="Images\file_logo.png" />
+	  <MauiImage Include="Images\file_logo.svg" />
+	  <MauiImage Include="Images\file_logo_csv.png" />
+	  <MauiImage Include="Images\folder.png" />
+	  <MauiImage Include="Images\folder_logo.png" />
+	  <MauiImage Include="Images\folder_logo_csv.png" />
+	  <MauiImage Include="Images\mini_folder_logo.png" />
+	  <MauiImage Include="Images\plus.png" />
+	  <MauiImage Include="Images\plus2.png" />
+	  <MauiImage Include="Images\share.png" />
+	  <MauiImage Include="Images\undo.png" />
+	</ItemGroup>
+
 	<PropertyGroup Label="MauiAppAccelerator">
 		<wizardVersion>v1.3.1</wizardVersion>
 		<projectType>MVVMToolkit</projectType>
 		<framework>Tabs</framework>
-	</PropertyGroup>
-
-	<PropertyGroup>
-	  <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net6.0-windows10.0.19041.0</TargetFrameworks>
 	</PropertyGroup>
 
 </Project>

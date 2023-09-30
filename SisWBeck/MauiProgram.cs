@@ -1,8 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MKDComm.communication.interfaces;
 using Modelo.Tipos;
 using SisWBeck.DB;
 using SisWBeck.ViewModels;
 using SisWBeck.Views;
+
+using SisWBeck.Platforms;
 
 namespace SisWBeck;
 
@@ -33,6 +36,8 @@ public static class MauiProgram
 
         builder.Services.AddTransient<PesagemViewModel>();
         builder.Services.AddTransient<PesagemPage>();
+
+		builder.Services.AddTransient<IHALCommFactory, CommFactory>();
 
         return builder.Build();
 	}

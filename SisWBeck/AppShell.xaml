@@ -7,7 +7,7 @@
 	xmlns:local="clr-namespace:SisWBeck">
 
     <ShellContent
-			Title="Início"
+			Title="Lotes de Animais"
 			Route="inicio"
 			Icon="iconblank.png"
 			ContentTemplate="{DataTemplate views:MainPage}" />

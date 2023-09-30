@@ -25,9 +25,9 @@ namespace SisWBeck
             return result;
         }
 
-        public async Task<bool> InputAlert(string title, string message)
+        public async Task<bool> InputAlert(string title, string message, string confirmar = "SIM", string cancelar = "NÃO")
         {
-            bool? resposta = await Shell.Current.CurrentPage.DisplayAlert(title, message, "SIM", "NÃO");
+            bool? resposta = await Shell.Current.CurrentPage.DisplayAlert(title, message, confirmar, cancelar);
             return resposta ?? false;
         }
 
