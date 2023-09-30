@@ -29,7 +29,7 @@
                         <FlexLayout HorizontalOptions="Center"
                                     HeightRequest="90"
                                     JustifyContent="Center">
-                            <Label Text="999" 
+                            <Label Text="{Binding Balanca.PesoSTR}" 
                                    TextColor="Green"
                                    HorizontalOptions="Center"
                                    VerticalTextAlignment="End"

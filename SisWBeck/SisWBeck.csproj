@@ -99,6 +99,12 @@
 	  <MauiImage Include="Images\undo.png" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Compile Update="Platforms\MacCatalyst\BluetoothHelper.cs">
+	    <ExcludeFromCurrentConfiguration>true</ExcludeFromCurrentConfiguration>
+	  </Compile>
+	</ItemGroup>
+
 	<PropertyGroup Label="MauiAppAccelerator">
 		<wizardVersion>v1.3.1</wizardVersion>
 		<projectType>MVVMToolkit</projectType>

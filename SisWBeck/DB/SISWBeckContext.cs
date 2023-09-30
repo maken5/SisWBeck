@@ -6,6 +6,16 @@ namespace SisWBeck.DB
 {
     public class SISWBeckContext :DbContext
     {
+        private static Config config;
+        public Config Config
+        {
+            get
+            {
+                if (config==null)
+                    config = new Config();
+                return config;
+            }
+        }
         
         public DbSet<Pesagens> Pesagens { get; set; }
         public DbSet<Lotes> Lotes { get; set; }

@@ -6,6 +6,7 @@ using SisWBeck.ViewModels;
 using SisWBeck.Views;
 
 using SisWBeck.Platforms;
+using SisWBeck.Comm;
 
 namespace SisWBeck;
 
@@ -36,6 +37,7 @@ public static class MauiProgram
 
         builder.Services.AddTransient<PesagemViewModel>();
         builder.Services.AddTransient<PesagemPage>();
+		builder.Services.AddTransient<BluetoothHelper>();
 
 		builder.Services.AddTransient<IHALCommFactory, CommFactory>();
 

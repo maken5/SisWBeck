@@ -8,6 +8,7 @@ namespace SisWBeck.ViewModels
     public partial class ConfiguracaoViewModel : BaseViewModel
     {
         IHALCommFactory CommFactory;
+        Config config = new Config();
         public ConfiguracaoViewModel(SISWBeckContext context,
                                      IDialogService dialogService,
                                      IHALCommFactory CommFactory) : base(context, dialogService)
