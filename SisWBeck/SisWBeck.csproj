@@ -45,11 +45,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Images\bar_chart.png" />
 	  <None Remove="Resources\Images\delete.png" />
 	  <None Remove="Resources\Images\ox.png" />
 	  <None Remove="Resources\Images\plus.png" />
 	  <None Remove="Resources\Images\settings.png" />
 	  <None Remove="Resources\Images\share.png" />
+	  <None Remove="Resources\Images\undo.png" />
 	</ItemGroup>
 
 	<ItemGroup>
