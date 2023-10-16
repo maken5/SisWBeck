@@ -28,6 +28,7 @@ public static class MauiProgram
 
 		builder.Services.AddTransient<IDialogService, DialogService>();
         builder.Services.AddTransient<IDialogServicePesagem, DialogService>();
+        builder.Services.AddTransient<IMainNavigationService, DialogService>();
 
         builder.Services.AddSingleton<MainViewModel>();
 		builder.Services.AddSingleton<MainPage>();

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SisWBeck
 {
-    public class DialogService : IDialogServicePesagem
+    public class DialogService : IDialogServicePesagem, IMainNavigationService
     {
         IServiceProvider serviceProvider;
 
@@ -36,12 +36,28 @@ namespace SisWBeck
             await Shell.Current.CurrentPage.DisplayAlert(title, message, "OK");
         }
 
-
-        void IDialogServicePesagem.ShowPesagem(Lotes lote)
+        public async Task NavigateBack()
         {
-            PesagemPage pesagem = serviceProvider.GetServices<PesagemPage>().FirstOrDefault();
-            if (pesagem!=null)
-                Shell.Current.CurrentPage.Navigation.PushModalAsync(pesagem);
+            await Shell.Current.CurrentPage.Navigation.PopModalAsync();
+        }
+
+        public async Task ShowPesagem(Lotes lote)
+        {
+            if (lote != null)
+            {
+                PesagemPage pesagem = serviceProvider.GetServices<PesagemPage>().FirstOrDefault();
+                if (pesagem != null)
+                {
+                    pesagem.SetLote(lote);
+                    await Shell.Current.CurrentPage.Navigation.PushModalAsync(pesagem);
+                }
+            }
+        }
+
+
+        public async Task NavigateToMain()
+        {
+            await Shell.Current.GoToAsync("//inicio");
         }
     }
 }

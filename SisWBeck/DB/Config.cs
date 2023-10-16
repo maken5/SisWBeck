@@ -8,21 +8,10 @@ namespace SisWBeck.DB
 {
     public class Config
     {
-        public string Balanca
-        {
-            get => Preferences.Default.Get("Balança", "");
-            set => Preferences.Default.Set("Balança", value);
-        }
-        public bool UsarTecladoNumerido
-        {
-            get => Preferences.Default.Get("UsarTecladoNumerico", "S") == "S";
-            set => Preferences.Default.Set("UsarTecladoNumerico", value);
-        }
-        public bool UsarPontoVirgula
-        {
-            get => Preferences.Default.Get("UsarPontoVirgula", "S") == "S";
-            set => Preferences.Default.Set("UsarPontoVirgula", value);
-        }
+        public int Id { get; set; }
+        public string Balanca { get; set; }
+        public bool UsarTecladoNumerico { get; set; }
+        public bool UsarPontoVirgula { get; set; }
 
 
     }

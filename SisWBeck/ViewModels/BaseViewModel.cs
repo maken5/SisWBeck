@@ -19,7 +19,8 @@ public partial class BaseViewModel : ObservableObject
 	}
 
 
-    public BaseViewModel(SISWBeckContext context, IDialogService dialogService)
+    public BaseViewModel(SISWBeckContext context, 
+						 IDialogService dialogService)
 	{
 		this.context = context;
 		this.dialogService = dialogService;

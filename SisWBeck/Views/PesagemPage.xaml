@@ -8,7 +8,12 @@
     xmlns:vm="clr-namespace:SisWBeck.ViewModels"
     xmlns:local="clr-namespace:SisWBeck.Views"
     x:DataType="vm:PesagemViewModel"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     mc:Ignorable="d">
+    <!--<ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior Command="{Binding AppearingCommand}" EventName="Appearing" />
+        <toolkit:EventToCommandBehavior Command="{Binding DisappearingCommand}" EventName="Disappearing" />
+    </ContentPage.Behaviors>-->
     <ContentPage.Content>
         <Grid>
             <Grid.RowDefinitions>
@@ -29,7 +34,7 @@
                         <FlexLayout HorizontalOptions="Center"
                                     HeightRequest="90"
                                     JustifyContent="Center">
-                            <Label Text="{Binding Balanca.PesoSTR}" 
+                            <Label Text="{Binding Balanca.PesoStr}" 
                                    TextColor="Green"
                                    HorizontalOptions="Center"
                                    VerticalTextAlignment="End"
@@ -63,8 +68,10 @@
                            HasShadow="True">
                         <Entry Placeholder="Identificação"
                                BackgroundColor="Transparent"
+                               x:Name="brinco"
                                FontSize="20"
                                MaxLength="20"
+                               Keyboard="{Binding TipoTeclado}"
                                ClearButtonVisibility="WhileEditing"
                                TextColor="Black"/>
                     </Frame>
@@ -116,13 +123,13 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Label Grid.Row="0"
-                           Text="Nome do lote"
+                           Text="{Binding ControleLote.IdentificacaoLote}"
                            VerticalOptions="Center"
                            FontAttributes="Bold"
                            FontSize="20"
                            TextColor="Black"/>
                     <StackLayout Grid.Row="1">
-                        <Label Text="nome csv"
+                        <Label Text="{Binding ControleLote.DadosLote}"
                                FontSize="Small"
                                TextColor="Gray"/>
                         <BoxView HeightRequest="5"
@@ -186,14 +193,15 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <Button Grid.Column="0" 
-                    Text="Sair"  
-                    FontSize="12"
-                    TextColor="Black"
-                    CornerRadius="10"
-                    BorderColor="Black"
-                    BackgroundColor="White"
-                    BorderWidth="2"
-                    ImageSource="undo.png"/>
+                        Text="Sair"  
+                        FontSize="12"
+                        TextColor="Black"
+                        CornerRadius="10"
+                        BorderColor="Black"
+                        BackgroundColor="White"
+                        BorderWidth="2"
+                        Command="{Binding VoltarCommand}"
+                        ImageSource="undo.png"/>    
                 <Button Grid.Column="1" 
                     Text="Apagar"  
                     FontSize="10"

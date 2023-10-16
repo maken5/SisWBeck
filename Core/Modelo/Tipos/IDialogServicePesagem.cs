@@ -2,11 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Modelo.Tipos
 {
     public interface IDialogServicePesagem : IDialogService
     {
-        void ShowPesagem(Lotes lote);
+        Task ShowPesagem(Lotes lote);
     }
 }

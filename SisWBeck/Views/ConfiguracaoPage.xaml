@@ -61,6 +61,8 @@
                                             HorizontalOptions="Start"
                                             FontSize="Medium"
                                             Title="Dispositivos pareados"
+                                            ItemsSource="{Binding Balancas}"
+                                            SelectedItem="{Binding Cfg.Balanca}"
                                             Margin="5,0,0,0"
                                             BackgroundColor="Transparent"/>
                                 </Border>
@@ -87,6 +89,7 @@
                             <CheckBox Grid.Column="0"
                                       HorizontalOptions="StartAndExpand"
                                       Color="Red"
+                                      IsChecked="{Binding Cfg.UsarTecladoNumerico}"
                                       x:Name="NumericKeyboard_CheckBox"/>
                             <Label Grid.Column="1"
                                    VerticalOptions="Center"
@@ -104,9 +107,10 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <CheckBox Grid.Column="0"
-                                    HorizontalOptions="StartAndExpand"
-                                    Color="Red"
-                                    x:Name="Separator_CheckBox"/>
+                                      HorizontalOptions="StartAndExpand"
+                                      Color="Red"
+                                      IsChecked="{Binding Cfg.UsarPontoVirgula}"
+                                      x:Name="Separator_CheckBox"/>
                             <Label Grid.Column="1"
                                     VerticalOptions="Center"
                                     HorizontalTextAlignment="Start"

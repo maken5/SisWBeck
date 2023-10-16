@@ -6,17 +6,27 @@ namespace SisWBeck.DB
 {
     public class SISWBeckContext :DbContext
     {
-        private static Config config;
-        public Config Config
+        public Config GetConfig()
         {
-            get
+            var cfg = Configs.FirstOrDefault();
+            if (cfg == null)
             {
-                if (config==null)
-                    config = new Config();
-                return config;
+                cfg = new Config();
+                Configs.Add(cfg);
+                SaveChanges();
+            }
+            return cfg;
+        }
+        public void UpdateConfig(Config config)
+        {
+            if (config != null && config.Id != 0)
+            {
+                Configs.Update(config);
+                SaveChanges();
             }
         }
         
+        public DbSet<Config> Configs { get; set; }
         public DbSet<Pesagens> Pesagens { get; set; }
         public DbSet<Lotes> Lotes { get; set; }
 
@@ -67,7 +77,7 @@ namespace SisWBeck.DB
             }
         }
 
-        public async void Add(Pesagens Pesagem)
+        public async Task Add(Pesagens Pesagem)
         {
             if (Pesagem != null)
             {
@@ -76,7 +86,7 @@ namespace SisWBeck.DB
             }
         }
 
-        public async void Add(List<Pesagens> pesagens)
+        public async Task Add(List<Pesagens> pesagens)
         {
 
             if (pesagens?.Any() ?? false)

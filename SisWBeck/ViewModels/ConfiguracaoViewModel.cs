@@ -8,12 +8,16 @@ namespace SisWBeck.ViewModels
     public partial class ConfiguracaoViewModel : BaseViewModel
     {
         IHALCommFactory CommFactory;
-        Config config = new Config();
+        new IMainNavigationService dialogService;
+
+        public Config Cfg { get; set; }
         public ConfiguracaoViewModel(SISWBeckContext context,
-                                     IDialogService dialogService,
+                                     IMainNavigationService dialogService,
                                      IHALCommFactory CommFactory) : base(context, dialogService)
         {
             this.CommFactory = CommFactory;
+            this.dialogService = dialogService;
+            Cfg = context.GetConfig();
             List<string> lista = CommFactory.GetDevices();
             foreach (string device in lista)
             {
@@ -29,31 +33,18 @@ namespace SisWBeck.ViewModels
             set => Set(ref _Balancas, value);
         }
 
-        private string _Balanca;
-        public string Balanca
-        {
-            get => _Balanca;
-            set => Set(ref _Balanca, value);
-        }
-
-        private bool _usarTecladoNumerico;
-        public bool UsarTecladoNumerico
-        {
-            get => _usarTecladoNumerico;
-            set => Set(ref _usarTecladoNumerico, value);
-        }
-
-
-        private bool _UsarPontoEVirgula;
-        public bool UsarPontoEVirgula
-        {
-            get => _UsarPontoEVirgula;
-            set => Set(ref _UsarPontoEVirgula, value);
-        }
-
-        public ICommand SaveCommand => new RelayCommand(() =>
+        public ICommand SaveCommand => new RelayCommand(async () =>
         {
             IsModificado = false;
+            try
+            {
+                context.UpdateConfig(Cfg);
+                
+            }catch (Exception ex)
+            {
+                await dialogService.MessageError("Erro salvando configurações", ex.Message);
+            }
+            await this.dialogService.NavigateToMain();
         });
 
     }

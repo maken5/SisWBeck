@@ -35,6 +35,8 @@ namespace SisWBeck.Comm
         public int Peso{get;}
         public string PesoStr { get; }
         public bool Estavel { get; }
+
+        public bool IsContectado { get; }
         public void Zerar()
         {
 

@@ -57,17 +57,24 @@ public partial class MainViewModel : BaseViewModel
     {
         if (Lote != null)
         {
-            int nrDiasDesdeUltimaPesagem = (int)(DateTime.Now.Date - (Lote.UltimaDataPesagem ?? DateTime.Now).Date).TotalDays;
-            if (nrDiasDesdeUltimaPesagem > 1 &&
-                (Lote.UltimoNrPesagem??0)>= Lote.NrPesagem)
+            if (Lote.UltimaDataPesagem == null)
             {
-                bool incrementarNrPesagem = await dialogService.InputAlert("Nova Pesagem?",
-                    $"O lote {Lote.Nome} está na sessão de pesagem número {Lote.NrPesagem}.\r\n A última pesagem foi feita em {Lote.UltimaDataPesagem.Value.Date}\r\n\r\nDeseja abrir uma nova sessão de pesagem ou continuar a sessão de pesagem anterior?",
-                    $"Iniciar Pesagem {Lote.NrPesagem+1}",$"Continuar Pesagem {Lote.NrPesagem}");
-                if (incrementarNrPesagem)
-                    Lote.NrPesagem++;
+                if (Lote.NrPesagem<=0) Lote.NrPesagem = 1;
             }
-            dialogServicePesagem.ShowPesagem(Lote);
+            else
+            {
+                int nrDiasDesdeUltimaPesagem = (int)(DateTime.Now.Date - Lote.UltimaDataPesagem.Value.Date).TotalDays;
+                if (nrDiasDesdeUltimaPesagem > 1 &&
+                    (Lote.UltimoNrPesagem ?? 0) >= Lote.NrPesagem)
+                {
+                    bool incrementarNrPesagem = await dialogService.InputAlert("Nova Pesagem?",
+                        $"O lote {Lote.Nome} está na sessão de pesagem número {Lote.NrPesagem}.\r\n A última pesagem foi feita em {Lote.UltimaDataPesagem.Value.Date}\r\n\r\nDeseja abrir uma nova sessão de pesagem ou continuar a sessão de pesagem anterior?",
+                        $"Iniciar Pesagem {Lote.NrPesagem + 1}", $"Continuar Pesagem {Lote.NrPesagem}");
+                    if (incrementarNrPesagem)
+                        Lote.NrPesagem++;
+                }
+            }
+            await dialogServicePesagem.ShowPesagem(Lote);
         }
         else
         {

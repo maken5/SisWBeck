@@ -4,9 +4,11 @@ using Microsoft.Maui;
 using MKDComm.communication.devices.weightscales;
 using mkdinfo.communication.media;
 using mkdinfo.communication.protocol;
+using Modelo.Entidades;
 using Modelo.Tipos;
 using SisWBeck.Comm;
 using SisWBeck.DB;
+using SisWBeck.Modelo;
 using System.ComponentModel;
 using static MKDComm.communication.devices.weightscales.BalancaWBeck;
 
@@ -17,13 +19,33 @@ namespace SisWBeck.ViewModels
         private BluetoothHelper bluetoothHelper;
         private bool disposedValue;
         private Balanca balanca;
+        private Config config;
+        
+        private ControleLotes _controleLote;
+
+        public ControleLotes ControleLote
+        {
+            get => _controleLote; 
+            set => Set(ref _controleLote, value); 
+        }
+
+
+        public void SetLote(Lotes lote)
+        {
+            ControleLote = new ControleLotes(lote, context);
+        }
+
+        //public string TipoTeclado => this.context.Config.UsarTecladoNumerico ? "Numeric" : "Default";
+        public Keyboard TipoTeclado => this.config.UsarTecladoNumerico ?
+                                            Keyboard.Numeric : Keyboard.Default;
+
         public Balanca Balanca
         {
             get
             {
                 if (balanca == null)
                 {
-                    balanca = new Balanca(bluetoothHelper, context.Config);
+                    balanca = new Balanca(bluetoothHelper, context.GetConfig());
                 }
                 return balanca;
             }
@@ -34,6 +56,32 @@ namespace SisWBeck.ViewModels
                                 BluetoothHelper bluetoothHelper) : base(context, dialogService)
         {
             this.bluetoothHelper = bluetoothHelper;
+            this.config = context.GetConfig();
+        }
+
+        [RelayCommand]
+        public async Task Voltar()
+        {
+            if ((Balanca?.IsContectado ?? false) &&
+                ControleLote !=null)
+            {
+                bool voltar = await dialogService.InputAlert("Sair da pesagem?", 
+                    $"Deseja sair da pesagem do lote {ControleLote.Nome}?");
+                if (!voltar) return;
+            }
+            await dialogService.NavigateBack();
+        }
+
+        [RelayCommand]
+        void Appearing()
+        {
+
+        }
+
+        [RelayCommand]
+        void Disapearing()
+        {
+
         }
 
         protected virtual void Dispose(bool disposing)

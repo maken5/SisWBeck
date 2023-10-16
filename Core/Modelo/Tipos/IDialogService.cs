@@ -11,5 +11,7 @@ namespace Modelo.Tipos
         Task<bool> InputAlert(string title, string message, string confirmar = "SIM", string cancelar = "NÃO");
 
         Task MessageError(string title, string message);
+
+        Task NavigateBack();
     }
 }
