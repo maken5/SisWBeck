@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/dotnet/2021/maui/design"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:SisWBeck.ViewModels"
+    xmlns:cv="clr-namespace:SisWBeck.Modelo"
     xmlns:modelo="clr-namespace:Modelo.Entidades;assembly=Modelo" 
     xmlns:local="clr-namespace:SisWBeck.Views"
     x:DataType="vm:PesagemViewModel"
@@ -15,6 +16,11 @@
         <toolkit:EventToCommandBehavior Command="{Binding AppearingCommand}" EventName="Appearing" />
         <toolkit:EventToCommandBehavior Command="{Binding DisappearingCommand}" EventName="Disappearing" />
     </ContentPage.Behaviors>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <cv:IndexToColorConverter x:Key="IndexToColorConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <ContentPage.Content>
         <Grid>
             <Grid.RowDefinitions>
@@ -141,11 +147,15 @@
                     </StackLayout>
                     <ListView Grid.Row="2"
                               RowHeight="60"
+                              x:Name="listaPesagens"
                               ItemsSource="{x:Binding Lote.Pesagens}"
+                              SelectedItem="{Binding Lote.PesagemSelecionada}"
+                              SelectionMode="Single"
                               FlowDirection="LeftToRight">
                         <ListView.ItemTemplate>
                             <DataTemplate x:DataType="modelo:Pesagens">
-                                <ViewCell>
+                                <ViewCell >
+                                    <!-- BackgroundColor="{Binding .,Converter={StaticResource IndexToColorConverter},ConverterParameter={x:Reference Name=listaPesagens}}" -->
                                     <StackLayout Orientation="Horizontal"
                                                  FlowDirection="LeftToRight"
                                                  VerticalOptions="Center">
@@ -195,7 +205,6 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
-                    <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <Button Grid.Column="0" 
                         Text="Sair"  
@@ -215,17 +224,18 @@
                     BorderColor="Black"
                     BackgroundColor="White"
                     BorderWidth="2"
+                    Command="{Binding ApagarPesagemCommand}"
                     ImageSource="delete.png"/>
-                <Button Grid.Column="2" 
-                    Text="Config"  
+                <!--<Button Grid.Column="2" 
+                    Text="Cfg"  
                     FontSize="11"
                     TextColor="Black"
                     CornerRadius="10"
                     BorderColor="Black"
                     BackgroundColor="White"
                     BorderWidth="2"
-                    ImageSource="settings.png"/>
-                <Button Grid.Column="3" 
+                    ImageSource="settings.png"/>-->
+                <Button Grid.Column="2" 
                     Text="Mais" 
                     FontSize="12"
                     TextColor="Black"

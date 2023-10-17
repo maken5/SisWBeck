@@ -111,6 +111,26 @@ namespace SisWBeck.ViewModels
             balanca.Stop();
         }
 
+        [RelayCommand]
+        async void ApagarPesagem()
+        {
+            if (Lote.PesagemSelecionada == null)
+                await dialogService.MessageError("Nenhuma pesagem selecionada!", "Selecione um registro de pesagem para ser removido");
+            else
+            {
+                if (await dialogService.InputAlert("Deseja apagar a seguinte pesagem?", $"Identificação: {Lote.PesagemSelecionada.Codigo}\nData: {Lote.PesagemSelecionada.Data}\nPeso:{Lote.PesagemSelecionada.Peso} Kg"))
+                {
+                    try
+                    {
+                        await Lote.RemovePesagem(Lote.PesagemSelecionada);
+                    }catch (Exception ex)
+                    {
+                        await dialogService.MessageError("Erro removendo pesagem", ex.Message);
+                    }
+                }
+            }
+        }
+
 
         #endregion
 
