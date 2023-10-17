@@ -16,29 +16,36 @@ namespace SisWBeck.ViewModels
 {
     public partial class PesagemViewModel : BaseViewModel, IDisposable
     {
+
+        #region Atributos e métodos privados ---------------------------------------------
         private BluetoothHelper bluetoothHelper;
         private bool disposedValue;
         private Balanca balanca;
         private Config config;
         
         private ControleLotes _controleLote;
+        #endregion
+        #region ctor ---------------------------------------------------------------------
+        public PesagemViewModel(SISWBeckContext context,
+                                IDialogService dialogService,
+                                BluetoothHelper bluetoothHelper) : base(context, dialogService)
+        {
+            this.bluetoothHelper = bluetoothHelper;
+            this.config = context.GetConfig();
+            this.balanca = new Balanca(bluetoothHelper, config);
+        }
+        #endregion
 
-        public ControleLotes ControleLote
+        #region Propriedades públicas ----------------------------------------------------
+        public ControleLotes Lote
         {
             get => _controleLote; 
-            set => Set(ref _controleLote, value); 
+            set => Set(ref _controleLote, value);
         }
-
-
-        public void SetLote(Lotes lote)
-        {
-            ControleLote = new ControleLotes(lote, context);
-        }
-
-        //public string TipoTeclado => this.context.Config.UsarTecladoNumerico ? "Numeric" : "Default";
         public Keyboard TipoTeclado => this.config.UsarTecladoNumerico ?
                                             Keyboard.Numeric : Keyboard.Default;
 
+        
         public Balanca Balanca
         {
             get
@@ -51,39 +58,64 @@ namespace SisWBeck.ViewModels
             }
             private set => SetProperty(ref balanca, value);
         }
-        public PesagemViewModel(SISWBeckContext context, 
-                                IDialogService dialogService,
-                                BluetoothHelper bluetoothHelper) : base(context, dialogService)
+        #endregion
+
+        #region Métodos públicos ---------------------------------------------------------
+        public void SetLote(Lotes lote)
         {
-            this.bluetoothHelper = bluetoothHelper;
-            this.config = context.GetConfig();
+            Lote = new ControleLotes(lote, context);
+        }
+        public bool Finalizar()
+        {
+            try
+            {
+                balanca.Stop();
+            }
+            catch { }
+            return true;
         }
 
+        #endregion
+
+
+        #region Command ------------------------------------------------------------------
         [RelayCommand]
         public async Task Voltar()
         {
             if ((Balanca?.IsContectado ?? false) &&
-                ControleLote !=null)
+                Lote !=null)
             {
                 bool voltar = await dialogService.InputAlert("Sair da pesagem?", 
-                    $"Deseja sair da pesagem do lote {ControleLote.Nome}?");
+                    $"Deseja sair da pesagem do lote {Lote.Nome}?");
                 if (!voltar) return;
             }
+            try
+            {
+                balanca.Stop();
+                balanca.Dispose();
+            }
+            catch { }
+            balanca = null;
             await dialogService.NavigateBack();
         }
 
         [RelayCommand]
         void Appearing()
         {
-
+            balanca.Start();
         }
 
         [RelayCommand]
         void Disapearing()
         {
-
+            balanca.Stop();
         }
 
+
+        #endregion
+
+
+        #region IDisposable --------------------------------------------------------------
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -116,5 +148,7 @@ namespace SisWBeck.ViewModels
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
+
+        #endregion
     }
 }

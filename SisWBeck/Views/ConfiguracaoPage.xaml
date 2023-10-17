@@ -9,6 +9,7 @@
     xmlns:local="clr-namespace:SisWBeck.Views"
     x:DataType="vm:ConfiguracaoViewModel"
     Shell.BackgroundColor="Red"
+    Shell.FlyoutBehavior="Disabled"
     mc:Ignorable="d">
     <!--<ContentPage.BindingContext>
         <vm:ConfiguracaoViewModel />

@@ -12,15 +12,30 @@ namespace SisWBeck.Modelo
     {
         private Lotes Lote;
         private SISWBeckContext db;
+        private ObservableCollection<Pesagens> pesagens;
 
         public ControleLotes(Lotes lote, SISWBeckContext db)
         {
             this.Lote = lote;
             this.db = db;
+            pesagens = new ObservableCollection<Pesagens>();
+            if (lote.Pesagens?.Where(p=> p !=null && p.NrPesagem == lote.NrPesagem)?.Any() ?? false)
+            {
+                pesagens = new ObservableCollection<Pesagens>(lote.Pesagens?.Where(p => p != null && p.NrPesagem == lote.NrPesagem));
+            } else
+            {
+                pesagens = new ObservableCollection<Pesagens>();
+            }
+            pesagens.Add(new Pesagens() { NrPesagem = lote.NrPesagem, Codigo = "123abc", Lote=Lote, Peso=100});
+            pesagens.Add(new Pesagens() { NrPesagem = lote.NrPesagem, Codigo = "123xyz", Lote = Lote, Peso = 102 });
         }
+
         public string Nome => this.Lote?.Nome;
         public string IdentificacaoLote => $"Lote: {Lote?.Nome} ({Lote?.Data.ToString("dd/MM/yyyy")})";
         public string DadosLote => $"Nr Pesagem:{Lote?.NrPesagem} - Animais:{Lote?.NrAnimais??0}";
+
+        public ObservableCollection<Pesagens> Pesagens => pesagens;
+
 
         public async Task AddPesagem(string identificacao, int peso)
         {
@@ -37,5 +52,6 @@ namespace SisWBeck.Modelo
                 db.SaveChanges();
             }
         }
+
     }
 }

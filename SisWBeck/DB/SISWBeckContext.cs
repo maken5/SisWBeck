@@ -6,14 +6,19 @@ namespace SisWBeck.DB
 {
     public class SISWBeckContext :DbContext
     {
+        private static Config cfg = null;
         public Config GetConfig()
         {
-            var cfg = Configs.FirstOrDefault();
+            
             if (cfg == null)
             {
-                cfg = new Config();
-                Configs.Add(cfg);
-                SaveChanges();
+                cfg = Configs.FirstOrDefault();
+                if (cfg == null)
+                {
+                    cfg = new Config();
+                    Configs.Add(cfg);
+                    SaveChanges();
+                }
             }
             return cfg;
         }

@@ -20,5 +20,12 @@ namespace SisWBeck.Views
                 model.SetLote(lote);
         }
 
+        protected override bool OnBackButtonPressed()
+        {
+            if (model.Finalizar())
+                return base.OnBackButtonPressed();
+            return false;
+        }
+
     }
 }
