@@ -12,6 +12,7 @@ namespace SisWBeck.Views
             InitializeComponent(); 
             BindingContext = viewModel;
             this.model = viewModel;
+            DeviceDisplay.Current.KeepScreenOn = true;
         }
 
         public void SetLote(Lotes lote)
@@ -26,6 +27,16 @@ namespace SisWBeck.Views
                 return base.OnBackButtonPressed();
             return false;
         }
+
+
+
+        protected override void OnDisappearing()
+        {
+            if (model.Balanca != null)
+                try { model.Balanca.Stop(); }catch (Exception) { }
+            base.OnDisappearing();
+        }
+
 
     }
 }

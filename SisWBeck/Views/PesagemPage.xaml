@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/dotnet/2021/maui/design"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:SisWBeck.ViewModels"
-    xmlns:cv="clr-namespace:SisWBeck.Modelo"
+    xmlns:cv="clr-namespace:SisWBeck.Converter"
     xmlns:modelo="clr-namespace:Modelo.Entidades;assembly=Modelo" 
     xmlns:local="clr-namespace:SisWBeck.Views"
     x:DataType="vm:PesagemViewModel"
@@ -14,11 +14,14 @@
     mc:Ignorable="d">
     <ContentPage.Behaviors>
         <toolkit:EventToCommandBehavior Command="{Binding AppearingCommand}" EventName="Appearing" />
-        <toolkit:EventToCommandBehavior Command="{Binding DisappearingCommand}" EventName="Disappearing" />
+        <toolkit:EventToCommandBehavior Command="{Binding DisapearingCommand}" EventName="Disappearing" />
     </ContentPage.Behaviors>
     <ContentPage.Resources>
         <ResourceDictionary>
             <cv:IndexToColorConverter x:Key="IndexToColorConverter"/>
+            <cv:WeightStatusToColorConverter x:Key="WeightStatusToColorConverter"/>
+            <cv:WeithtStatusToConnectedBoolConverter x:Key="WeithtStatusToConnectedBoolConverter"/>
+            <cv:BoolToPesoEstavelParaSalvarColorConverter x:Key="BoolToPesoEstavelParaSalvarColorConverter"/>
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
@@ -37,27 +40,36 @@
                 <StackLayout>
                     
                     <!--#region Peso-->
-                    <Grid>
+                    <Grid x:Name="gridPeso">
+                        <Grid.BackgroundColor>
+                            <MultiBinding Converter="{StaticResource WeightStatusToColorConverter}">
+                                <Binding Path="Balanca.Peso"/>
+                                <Binding Path="Balanca.Status"/>
+                            </MultiBinding>
+                        </Grid.BackgroundColor>
                         <FlexLayout HorizontalOptions="Center"
                                     HeightRequest="90"
                                     JustifyContent="Center">
                             <Label Text="{Binding Balanca.PesoStr}" 
-                                   TextColor="{Binding Balanca.PesoCor}"
+                                   x:Name="lblPeso"
                                    HorizontalOptions="Center"
                                    VerticalTextAlignment="End"
                                    HorizontalTextAlignment="Center"
                                    VerticalOptions="End"
-                                   FontSize="80"
-                                   FontAttributes="Bold"/>
+                                   TextColor="Black"
+                                   FontSize="72"
+                                   FontAttributes="Bold">
+                            </Label>
                             <Label Text="Kg"
-                                   TextColor="{Binding Balanca.PesoCor}"
+                                   x:Name="lblKg"
+                                   TextColor="Black"
                                    HorizontalOptions="End"
                                    VerticalOptions="End"
                                    VerticalTextAlignment="End"
                                    HorizontalTextAlignment="End"
                                    FontSize="40"
                                    IsVisible="{Binding Balanca.PesoPositivo}"
-                                   FontAttributes="Bold"/>  
+                                   FontAttributes="Bold"/>
                         </FlexLayout>
                         <Label Text="alerta"
                                TextColor="Red"
@@ -89,7 +101,6 @@
                     <!--#region Comandos -->
                     <FlexLayout HorizontalOptions="Center"
                                 JustifyContent="Center"
-                                IsVisible="{Binding Balanca.IsContectado}"
                                 VerticalOptions="Center"
                                 AlignItems="Center"
                                 AlignContent="Center">
@@ -102,16 +113,19 @@
                                 WidthRequest="120"
                                 BackgroundColor="LightGray"
                                 HorizontalOptions="Start"
+                                IsEnabled="{Binding Balanca.Status, Converter={StaticResource WeithtStatusToConnectedBoolConverter}}"
+                                Command="{Binding ZerarCommand}"
                                 TextColor="Black"/>
                         <Button CornerRadius="10"
                                 Text="Salvar"
-                                BackgroundColor="Green"
+                                BackgroundColor="{Binding Balanca.PesoEstavelParaRegistrar, Converter{StaticResource BoolToPesoEstavelParaSalvarColorConverter}}"
                                 FontAttributes="Bold"
                                 HeightRequest="40"
                                 WidthRequest="120"
                                 Margin="5,6,0,0"
                                 FontSize="Small"
                                 TextColor="Black"
+                                IsEnabled="{Binding Balanca.PesoEstavelParaRegistrar}"
                                 HorizontalOptions="End"/>
                     </FlexLayout>
                     <!--#endregion-->
@@ -243,6 +257,7 @@
                     BorderColor="Black"
                     BackgroundColor="White"
                     BorderWidth="2"
+                    Command="{Binding OutrasOpcoesCommand}"
                     ImageSource="bar_chart.png"/>
                 
             </Grid>

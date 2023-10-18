@@ -1,4 +1,5 @@
-﻿using MKDComm.communication.devices.weightscales;
+﻿using CoreMedia;
+using MKDComm.communication.devices.weightscales;
 using mkdinfo.communication.media;
 using mkdinfo.communication.protocol;
 using SisWBeck.DB;
@@ -36,20 +37,61 @@ namespace SisWBeck.Comm
         #endregion
 
         #region Atributos e métodos privados ---------------------------------------------
-        private bool disposedValue;
+        
+        //Objetos (serviços e dados)
         private BluetoothHelper bluetoothHelper;
         private Config config;
         private HALCommMediaBase comm = null;
-
-        private int _peso;
-        private bool _estavel;
-        private WeightStats _status = WeightStats.Desconectado;
-        private object _lock = new object();
         private BalancaWBeck wbeck = null;
-        private Color CorLaranja = Color.FromRgb(255, 165, 0);
-        private Color CorVermelho = Color.FromRgb(255, 0, 0);
-        private Color CorVerde = Color.FromRgb(0, 128, 0);
-        private Color CorPreto = Color.FromRgb(0, 0, 0);
+
+        //atributos de controle interno
+        private bool disposedValue;
+        private bool lerConfiguracoes=true;
+        private object _lock = new object();
+        private bool ForceUpdate = false;
+        private int reconexoes = 0;
+        private readonly int MAX_RECONEXOES = 5;
+
+        // Métodos internos  de notificação
+        private void RaisePropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            if (!String.IsNullOrWhiteSpace(propertyName))
+                MainThread.BeginInvokeOnMainThread(() => {
+                    if (ForceUpdate)
+                    {
+                        ForceUpdate = false;
+                        OnPropertyChanged(nameof(Peso));
+                        OnPropertyChanged(nameof(PesoStr));
+                        OnPropertyChanged(nameof(Status));
+                    }
+                    OnPropertyChanged(propertyName);
+                });
+        }
+
+        private void NotifyPesoByStatus(WeightStats old_status, WeightStats new_status)
+        {
+            switch (old_status)
+            {
+                case WeightStats.Iniciando:
+                case WeightStats.Desconectado:
+                    if (new_status != WeightStats.Iniciando && new_status != WeightStats.Desconectado)
+                    {
+                        RaisePropertyChanged(nameof(PesoPositivo));
+                        RaisePropertyChanged(nameof(PesoStr));
+                    }
+                    break;
+                case WeightStats.Estavel:
+                case WeightStats.Pesando:
+                case WeightStats.Zerando:
+                    if (new_status == WeightStats.Iniciando || new_status == WeightStats.Desconectado)
+                    {
+                        RaisePropertyChanged(nameof(PesoPositivo));
+                        RaisePropertyChanged(nameof(PesoStr));
+                    }else if (new_status == WeightStats.Zerando)
+                        RaisePropertyChanged(nameof(PesoPositivo));
+                    break;
+            }
+        }
 
         protected bool Set<T>(ref T prop, T value, [CallerMemberName] string propertyName = null)
             where T : struct
@@ -62,7 +104,6 @@ namespace SisWBeck.Comm
             }
             return false;
         }
-
         protected T Get<T>(ref T prop)
             where T : struct
         {
@@ -73,24 +114,62 @@ namespace SisWBeck.Comm
         }
         #endregion
 
-
         #region Propriedades públicas ----------------------------------------------------
 
-        public string Nome => this.config.Balanca;
+        #region propriedades principais de controle --------------------------------------
+        private int _peso;
+        private WeightStats _status = WeightStats.Iniciando;
+
         public int Peso
         {
             get => Get(ref _peso);
             private set
             {
-                if (Set(ref _peso, value))
+                int old_peso = 0;
+                lock (_lock)
                 {
-                    OnPropertyChanged(nameof(PesoStr));
-                    OnPropertyChanged(nameof(PesoPositivo));
-                    OnPropertyChanged(nameof(PesoCor));
+                    old_peso = _peso;
+                    if (_peso != value)
+                        _peso = value;
                 }
-
+                if (old_peso != value || (_status!= WeightStats.Pesando && _status!= WeightStats.Estavel))
+                {
+                    RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(PesoStr));
+                    if ((old_peso <= 0 && value > 0) || (old_peso > 0 && value <= 0))
+                        RaisePropertyChanged(nameof(PesoPositivo));
+                }
             }
         }
+        public WeightStats Status
+        {
+            get => Get(ref _status);
+            set
+            {
+                WeightStats? old_status = null;
+                lock (_lock)
+                {
+                    old_status = _status;
+                    if (_status != value)
+                        _status = value;
+                }
+                RaisePropertyChanged();
+                NotifyPesoByStatus(old_status.Value, value);
+                if (value == WeightStats.Estavel && Peso>0)
+                    PesoEstavelParaRegistrar = true;
+                else PesoEstavelParaRegistrar = false;
+            }
+        }
+        #endregion
+
+        #region propriedades auxiliares de controle --------------------------------------
+        private bool pesoEstavelRegistrado = false;
+        public bool PesoEstavelParaRegistrar
+        {
+            get => Get(ref pesoEstavelRegistrado);
+            set => Set(ref pesoEstavelRegistrado, value);
+        }
+        public string Nome => this.config.Balanca;
         public string PesoStr
         {
             get
@@ -98,7 +177,7 @@ namespace SisWBeck.Comm
                 switch (Status)
                 {
                     case WeightStats.Iniciando:
-                        return "Conectando";
+                        return "Conect";
                     case WeightStats.Pesando:
                     case WeightStats.Estavel:
                         return Peso.ToString(); 
@@ -110,84 +189,49 @@ namespace SisWBeck.Comm
                 }
             }
         }
-        public Color PesoCor
-        {
-            get
-            {
-                switch (Status)
-                {
-                    case WeightStats.Iniciando:
-                        return CorLaranja;
-                    case WeightStats.Pesando:
-                        return Peso < 0 ? CorVermelho : CorPreto;
-                    case WeightStats.Zerando:
-                        return CorPreto;
-                    case WeightStats.Estavel:
-                        return CorVerde;
-                    case WeightStats.Desconectado:
-                    default:
-                        return CorVermelho;
-                }
-            }
-        }
-        public bool Estavel
-        {
-            get => Get(ref _estavel);
-            private set
-            {
-                Set(ref _estavel, value);
-                OnPropertyChanged(nameof(PesoStr));
-            }
-        }
-        public WeightStats Status
-        {
-            get => Get(ref _status);
-            set
-            {
-                if (Set(ref _status, value))
-                {
-                    OnPropertyChanged(nameof(IsContectado));
-                    OnPropertyChanged(nameof(Estavel));
-                    OnPropertyChanged(nameof(PesoStr));
-                    OnPropertyChanged(nameof(IsContectado));
-                    OnPropertyChanged(nameof(PesoCor));
-                }
-            }
-        }
         public bool PesoPositivo => Peso>0 && (Status == WeightStats.Pesando || Status == WeightStats.Estavel);
-        public bool IsContectado => Status != WeightStats.Desconectado && Status != WeightStats.Iniciando;
+        #endregion
 
         #endregion
 
         #region Métodos públicos ---------------------------------------------------------
-        public void Zerar()
-        {
-
-        }
-        public void Reconectar()
+        public bool Zerar()
         {
             if (wbeck != null)
                 try
                 {
-                    wbeck.Start();
-                } catch (Exception ex)
-                {
-
+                    wbeck.Zerar();
+                    Status = WeightStats.Zerando;
+                    return true;
                 }
+                catch { return false; };
+            return false;
         }
-
+        public void Reconectar()
+        {
+            if (wbeck!=null && reconexoes< MAX_RECONEXOES)
+            {
+                Stop();
+                reconexoes++;
+                Status = WeightStats.Iniciando;
+                Thread.Sleep(250);
+                Start();
+            }
+        }
         public void Start()
         {
+            ForceUpdate = true;
             if (wbeck != null)
             {
-                wbeck.Start();
+                lerConfiguracoes = true;
+                try { wbeck.Start(); } catch { }
             }
         }
         public void Stop()
         {
             if (wbeck != null)
             {
-                wbeck.Stop();
+                try { wbeck.Stop(); } catch { }
             }
         }
 
@@ -197,71 +241,20 @@ namespace SisWBeck.Comm
 
         public void OnErrorReceive(Exception ex)
         {
-            //try
-            //{
-            //    //Balanca.onWeightStatusReceived -= new BalancaWBeck.OnWeightStatusReceived(OnNewWeight);
-            //    //Balanca.onErrorReceived -= new BalancaWBeck.OnError(OnErrorReceive);
-            //    this.StopCommunication();
-            //    EnabledConnectingFlag = true;
-            //    WeightVisibility = false;
-            //    TextAlert = ex.Message;
-            //    TextAlertVisibility = true;
-            //    Weight = "";
-            //    WeightStats = WeightStats.Desconectado;
-            //    WeightStatus = "Reconectar";
-            //    WeightTextColor = "White";
-            //    WeightBackgroundColor = "Red";
-            //    SaveButtonColor = "Red";
-            //    KgVisibility = false;
-            //    //WeightStats = WeightStats.Desconectado;
-            //    //WeightStatus = "Reconectar";
-            //    //SaveButtonColor = "Red";
-            //    //KgVisibility = false;
-            //    SetAutozeroColor();
-            //    Saved = false;
-            //    CodeColor = Color.Transparent;
-            //    CodeTextColor = Color.Black;
-            //}
-            //catch
-            //{
-
-            //}
+            Console.WriteLine("OnErrorReceive");
+            Reconectar();
         }
         protected virtual void OnNewWeight(int? peso, WeightStats weightStats)
         {
             if (peso != null)
-            {
                 Peso = peso.Value;
-                Status = weightStats;
-            }
+            Status = weightStats;
+            if (reconexoes > 0) reconexoes = 0;
         }
 
         protected virtual void OnDisconnect()
         {
-            //try
-            //{
-            //    //Balanca.onWeightStatusReceived -= new BalancaWBeck.OnWeightStatusReceived(OnNewWeight);
-            //    //Balanca.onErrorReceived -= new BalancaWBeck.OnError(OnErrorReceive);
-            //    EnabledConnectingFlag = true;
-            //    WeightVisibility = false;
-            //    Weight = "";
-            //    TextAlert = "Desconectado";
-            //    TextAlertVisibility = true;
-            //    WeightStats = WeightStats.Desconectado;
-            //    WeightStatus = "Reconectar";
-            //    WeightTextColor = "White";
-            //    WeightBackgroundColor = "Red";
-            //    SaveButtonColor = "Red";
-            //    KgVisibility = false;
-            //    SetAutozeroColor();
-            //    Saved = false;
-            //    CodeColor = Color.Transparent;
-            //    CodeTextColor = Color.Black;
-            //}
-            //catch
-            //{
-
-            //}
+            Console.WriteLine("OnDisconect");
         }
 
         private void OnConfigEnd(ProtocoloModuloPesagemSMAX.SensorCalibrationResponse[] calibracoes, int? calibarcaoIdx, bool autozero, string numeroSerie, bool requireLicenseKey)
@@ -282,6 +275,7 @@ namespace SisWBeck.Comm
 
         private void ReadingInfos(int step, string name)
         {
+            lerConfiguracoes = false;
             //EnabledConnectingFlag = true;
             //WeightVisibility = false;
             //Weight = "";

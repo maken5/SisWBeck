@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SisWBeck.Modelo
+namespace SisWBeck.Converter
 {
     public class IndexToColorConverter : IValueConverter
     {

@@ -69,7 +69,7 @@ namespace SisWBeck.ViewModels
         {
             try
             {
-                balanca.Stop();
+                Balanca.Stop();
             }
             catch { }
             return true;
@@ -77,42 +77,38 @@ namespace SisWBeck.ViewModels
 
         #endregion
 
-
+        
         #region Command ------------------------------------------------------------------
         [RelayCommand]
         public async Task Voltar()
         {
-            if ((Balanca?.IsContectado ?? false) &&
-                Lote !=null)
-            {
-                bool voltar = await dialogService.InputAlert("Sair da pesagem?", 
+            bool voltar = await dialogService.InputAlert("Sair da pesagem?",
                     $"Deseja sair da pesagem do lote {Lote.Nome}?");
-                if (!voltar) return;
-            }
+            if (!voltar) return;
             try
             {
-                balanca.Stop();
-                balanca.Dispose();
+                Balanca.Stop();
+                Balanca.Dispose();
             }
             catch { }
-            balanca = null;
+            Balanca = null;
             await dialogService.NavigateBack();
         }
 
         [RelayCommand]
         void Appearing()
         {
-            balanca.Start();
+            if (Balanca != null) Balanca.Start();
         }
 
         [RelayCommand]
         void Disapearing()
         {
-            balanca.Stop();
+            if (balanca != null) balanca.Stop();
         }
 
         [RelayCommand]
-        async void ApagarPesagem()
+        async Task ApagarPesagem()
         {
             if (Lote.PesagemSelecionada == null)
                 await dialogService.MessageError("Nenhuma pesagem selecionada!", "Selecione um registro de pesagem para ser removido");
@@ -129,6 +125,17 @@ namespace SisWBeck.ViewModels
                     }
                 }
             }
+        }
+
+        [RelayCommand]
+        void OutrasOpcoes()
+        {
+        }
+
+        [RelayCommand]
+        void Zerar()
+        {
+            if (Balanca != null) Balanca.Zerar();
         }
 
 
