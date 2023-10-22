@@ -7,6 +7,7 @@ using mkdinfo.communication.protocol;
 using Modelo.Entidades;
 using Modelo.Tipos;
 using SisWBeck.Comm;
+using SisWBeck.Converter;
 using SisWBeck.DB;
 using SisWBeck.Modelo;
 using System.ComponentModel;
@@ -45,7 +46,6 @@ namespace SisWBeck.ViewModels
         public Keyboard TipoTeclado => this.config.UsarTecladoNumerico ?
                                             Keyboard.Numeric : Keyboard.Default;
 
-        
         public Balanca Balanca
         {
             get
@@ -58,6 +58,14 @@ namespace SisWBeck.ViewModels
             }
             private set => SetProperty(ref balanca, value);
         }
+
+        private string _identificacao;
+        public string Identificacao
+        {
+            get => _identificacao;
+            set => Set(ref _identificacao, value);
+        }
+
         #endregion
 
         #region Métodos públicos ---------------------------------------------------------
@@ -138,6 +146,17 @@ namespace SisWBeck.ViewModels
             if (Balanca != null) Balanca.Zerar();
         }
 
+        [RelayCommand]
+        async Task Registrar()
+        {
+            //if (!string.IsNullOrWhiteSpace(Identificacao) && 
+            //    ((Balanca?.Status ?? WeightStats.Desconectado) == WeightStats.Estavel) &&
+            //    Balanca.Peso>0)
+            {
+                //await Lote.AddPesagem(Identificacao, Balanca.Peso);
+                await Lote.AddPesagem(Identificacao, 343);
+            }
+        }
 
         #endregion
 

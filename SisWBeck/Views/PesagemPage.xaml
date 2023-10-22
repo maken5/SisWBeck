@@ -22,6 +22,7 @@
             <cv:WeightStatusToColorConverter x:Key="WeightStatusToColorConverter"/>
             <cv:WeithtStatusToConnectedBoolConverter x:Key="WeithtStatusToConnectedBoolConverter"/>
             <cv:BoolToPesoEstavelParaSalvarColorConverter x:Key="BoolToPesoEstavelParaSalvarColorConverter"/>
+            <cv:WeightStatusIdentificacaoToBoolConverter x:Key="WeightStatusIdentificacaoToBoolConverter"/>
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
@@ -93,6 +94,7 @@
                                FontSize="20"
                                MaxLength="20"
                                Keyboard="{Binding TipoTeclado}"
+                               Text="{Binding Identificacao}"
                                ClearButtonVisibility="WhileEditing"
                                TextColor="Black"/>
                     </Frame>
@@ -125,8 +127,15 @@
                                 Margin="5,6,0,0"
                                 FontSize="Small"
                                 TextColor="Black"
-                                IsEnabled="{Binding Balanca.PesoEstavelParaRegistrar}"
-                                HorizontalOptions="End"/>
+                                Command="{Binding RegistrarCommand}"
+                                HorizontalOptions="End">
+                            <Button.IsEnabled>
+                                <MultiBinding Converter="{StaticResource WeightStatusIdentificacaoToBoolConverter}">
+                                    <Binding Path="Identificacao"/>
+                                    <Binding Path="Balanca.Status"/>
+                                </MultiBinding>
+                            </Button.IsEnabled>
+                        </Button>
                     </FlexLayout>
                     <!--#endregion-->
                     

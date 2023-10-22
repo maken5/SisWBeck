@@ -14,6 +14,17 @@ namespace Modelo.Entidades
         public int Peso { get; set; }
 
         public int LoteId { get; set; }
-        public virtual Lotes Lote { get; set; }
+
+        private Lotes _lote;
+
+        public virtual Lotes Lote
+        {
+            get => _lote;
+            set
+            {
+                _lote = value;
+                NrPesagem = value?.NrPesagem ??0;
+            }
+        }
     }
 }

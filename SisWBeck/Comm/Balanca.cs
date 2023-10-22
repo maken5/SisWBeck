@@ -1,5 +1,4 @@
-﻿using CoreMedia;
-using MKDComm.communication.devices.weightscales;
+﻿using MKDComm.communication.devices.weightscales;
 using mkdinfo.communication.media;
 using mkdinfo.communication.protocol;
 using SisWBeck.DB;

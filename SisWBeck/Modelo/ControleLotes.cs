@@ -8,33 +8,32 @@ using System.Threading.Tasks;
 
 namespace SisWBeck.Modelo
 {
-    public class ControleLotes : ObservableObject
+    public partial class ControleLotes : ObservableObject
     {
         private Lotes Lote;
         private SISWBeckContext db;
-        private ObservableCollection<Pesagens> pesagens;
 
         public ControleLotes(Lotes lote, SISWBeckContext db)
         {
             this.Lote = lote;
             this.db = db;
-            pesagens = new ObservableCollection<Pesagens>();
-            if (lote.Pesagens?.Where(p => p != null && p.NrPesagem == lote.NrPesagem)?.Any() ?? false)
-            {
-                pesagens = new ObservableCollection<Pesagens>(lote.Pesagens?.Where(p => p != null && p.NrPesagem == lote.NrPesagem));
-            } else
-            {
-                pesagens = new ObservableCollection<Pesagens>();
-            }
-            pesagens.Add(new Pesagens() { NrPesagem = lote.NrPesagem, Codigo = "123abc", Lote = Lote, Peso = 100 });
-            pesagens.Add(new Pesagens() { NrPesagem = lote.NrPesagem, Codigo = "123xyz", Lote = Lote, Peso = 102 });
+            int? LoteId = lote?.Id;
+            var lista = db.Pesagens.Where(p => p.LoteId == LoteId && p.NrPesagem == NrPesagem).OrderByDescending(p => p.Data).ToList();
+            Pesagens = new ObservableCollection<Pesagens>(lista);
+            var lista_animais = db.Pesagens.GroupBy(p => p.Codigo).Select(g => g.Key).ToList();
+            Animais = new ObservableCollection<string>(lista_animais);
         }
 
         public string Nome => this.Lote?.Nome;
+        public int? NrPesagem => this.Lote?.NrPesagem;
         public string IdentificacaoLote => $"Lote: {Lote?.Nome} ({Lote?.Data.ToString("dd/MM/yyyy")})";
         public string DadosLote => $"Nr Pesagem:{Lote?.NrPesagem} - Animais:{Lote?.NrAnimais ?? 0}";
 
-        public ObservableCollection<Pesagens> Pesagens => pesagens;
+        [ObservableProperty]
+        private ObservableCollection<Pesagens> pesagens;
+
+        [ObservableProperty]
+        private ObservableCollection<string> animais;
 
         private Pesagens _pesagemSelecionada = null;
         public Pesagens PesagemSelecionada
@@ -62,16 +61,27 @@ namespace SisWBeck.Modelo
                 pesagem.Codigo = identificacao;
                 pesagem.Lote = this.Lote;
                 await db.Add(pesagem);
+                await db.SaveChangesAsync();
                 if (Lote.Pesagens == null)
                     Lote.Pesagens = new List<Pesagens>();
                 Lote.Pesagens.Add(pesagem);
-                db.SaveChanges();
+                Pesagens.Insert(0, pesagem);
+                if (!Animais.Contains(identificacao))
+                {
+                    Animais.Add(identificacao);
+                    this.OnPropertyChanged(nameof(DadosLote));
+                }
             }
         }
 
         public async Task RemovePesagem(Pesagens pesagem)
         {
-            await Task.Delay(1);
+            if (PesagemSelecionada != null)
+            {
+                db.Pesagens.Remove(PesagemSelecionada);
+                Pesagens.Remove(PesagemSelecionada);
+                await db.SaveChangesAsync();
+            }
         }
 
     }
