@@ -4,10 +4,9 @@ using Modelo.Tipos;
 using SisWBeck.DB;
 using SisWBeck.ViewModels;
 using SisWBeck.Views;
-
+using CommunityToolkit.Maui;
 using SisWBeck.Platforms;
 using SisWBeck.Comm;
-
 namespace SisWBeck;
 
 public static class MauiProgram
@@ -41,6 +40,8 @@ public static class MauiProgram
 		builder.Services.AddTransient<BluetoothHelper>();
 
 		builder.Services.AddTransient<IHALCommFactory, CommFactory>();
+
+		//builder.Services.AddTransient<IFileSaver>
 
         return builder.Build();
 	}

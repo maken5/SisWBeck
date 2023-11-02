@@ -62,9 +62,9 @@
 
 	<ItemGroup>
 	  <PackageReference Include="akgul.Maui.DataGrid" Version="3.0.0" />
-	  <PackageReference Include="CommunityToolkit.Maui" Version="1.4.0" />
-	  <PackageReference Include="CommunityToolkit.MVVM" Version="8.2.1" />
-	  <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.10" />
+	  <PackageReference Include="CommunityToolkit.Maui" Version="2.0.0" />
+	  <PackageReference Include="CommunityToolkit.MVVM" Version="8.2.2" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.13" />
 	  <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
 	</ItemGroup>
 
