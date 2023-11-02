@@ -39,6 +39,7 @@ namespace SisWBeck.Views
 
         private void Button_Clicked(object sender, EventArgs e)
         {
+            //workaround bug MAUI - Input nem sempre esconde teclado quando perde focus
             Platforms.KeyboardHelper.HideKeyboard();
         }
     }

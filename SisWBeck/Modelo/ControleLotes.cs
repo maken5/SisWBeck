@@ -27,7 +27,7 @@ namespace SisWBeck.Modelo
         public string Nome => this.Lote?.Nome;
         public int? NrPesagem => this.Lote?.NrPesagem;
         public string IdentificacaoLote => $"Lote: {Lote?.Nome} ({Lote?.Data.ToString("dd/MM/yyyy")})";
-        public string DadosLote => $"Nr Pesagem:{Lote?.NrPesagem} - Animais:{Lote.Pesagens.Count}/{Lote?.NrAnimais ?? 0}";
+        public string DadosLote => $"Nr Pesagem:{Lote?.NrPesagem} - Animais:{(Lote.Pesagens?.Count)??0}/{Lote?.NrAnimais ?? 0}";
 
         [ObservableProperty]
         private ObservableCollection<Pesagens> pesagens;

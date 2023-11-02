@@ -1,5 +1,6 @@
 ﻿using Modelo.Entidades;
 using Modelo.Tipos;
+using SisWBeck.Converter;
 using SisWBeck.DB;
 
 namespace SisWBeck.ViewModels;
@@ -7,10 +8,13 @@ namespace SisWBeck.ViewModels;
 public partial class MainViewModel : BaseViewModel
 {
     private IDialogServicePesagem dialogServicePesagem;
-
-    public MainViewModel(SISWBeckContext context, IDialogServicePesagem dialogService) : base(context, dialogService)
+    private IShare share;
+    public MainViewModel(SISWBeckContext context, 
+                         IDialogServicePesagem dialogService,
+                         IShare share) : base(context, dialogService)
     {
-        this.dialogServicePesagem = dialogService; 
+        this.dialogServicePesagem = dialogService;
+        this.share = share; 
     }
 
     [RelayCommand]
@@ -87,13 +91,44 @@ public partial class MainViewModel : BaseViewModel
     {
         if (Lote != null)
         {
+            string file;
+            if (this.context.GetConfig().ExportarSomentePesagensUltimoNrPesagem)
+                file = await SalvarUltimaPesagem(Lote);
+            else
+                file = await SalvarUltimas5Pesagens(Lote);
+            await Share.Default.RequestAsync(new ShareFileRequest
+            {
+                Title = $"Pesagens do lote {Lote.Nome}",
+                File = new ShareFile(file)
+            });
         }
         else
         {
             await dialogService.MessageError("Nenhum lote selecionado", "Selecione um lote para compartilhar/exportar");
         }
-
     }
+
+    private async Task<string> SalvarUltimaPesagem(Lotes Lote)
+    {
+        string fileName = ($"{Lote.Nome}_Nr_Pesagem_{Lote.NrPesagem}").ToValidFileName() + ".csv";
+        string file = Path.Combine(FileSystem.CacheDirectory, fileName);
+        var pesagens = this.context.Pesagens.Where(p => p.LoteId == Lote.Id).OrderBy(p => p.Data).ToList();
+        await File.WriteAllTextAsync(file, pesagens.UltimaPesagemToCSVString(this.context.GetConfig().UsarPontoVirgula));
+        return file;
+    }
+
+
+    private async Task<string> SalvarUltimas5Pesagens(Lotes Lote)
+    {
+        string fileName = ($"{Lote.Nome}_{Lote.NrPesagem}").ToValidFileName() + ".csv";
+        string file = Path.Combine(FileSystem.CacheDirectory, fileName);
+        int nrPesagem = this.context.Pesagens.Where(p => p.LoteId == Lote.Id).Max(p => p.NrPesagem);
+        nrPesagem -= 5;
+        var pesagens = this.context.Pesagens.Where(p => p.LoteId == Lote.Id && p.NrPesagem >= nrPesagem).GroupBy(p => p.Codigo).ToDictionary(g => g.Key, g => g.OrderBy(p => p.NrPesagem).ToList());
+        await File.WriteAllTextAsync(file, pesagens.Ultimas5PesagemToCSVString(nrPesagem, this.context.GetConfig().UsarPontoVirgula));
+        return file;
+    }
+
 
 
     public List<Lotes> Lotes

@@ -8,7 +8,7 @@ namespace SisWBeck
 {
     public static class Constantes
     {
-        public const string DatabaseFilename = "siswbeck.db3";
+        public const string DatabaseFilename = "siswbeck2_0.db3";
 
         public const SQLite.SQLiteOpenFlags Flags =
             // open the database in read/write mode

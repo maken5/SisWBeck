@@ -13,6 +13,7 @@ namespace SisWBeck.DB
         public bool UsarTecladoNumerico { get; set; }
         public bool UsarPontoVirgula { get; set; }
 
+        public bool ExportarSomentePesagensUltimoNrPesagem { get; set; } = true;
 
     }
 }

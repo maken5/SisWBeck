@@ -7,6 +7,8 @@ using SisWBeck.Views;
 using CommunityToolkit.Maui;
 using SisWBeck.Platforms;
 using SisWBeck.Comm;
+using Microsoft.Extensions.DependencyInjection;
+
 namespace SisWBeck;
 
 public static class MauiProgram
@@ -40,6 +42,7 @@ public static class MauiProgram
 		builder.Services.AddTransient<BluetoothHelper>();
 
 		builder.Services.AddTransient<IHALCommFactory, CommFactory>();
+		builder.Services.AddSingleton<IShare>(Share.Default);
 
 		//builder.Services.AddTransient<IFileSaver>
 

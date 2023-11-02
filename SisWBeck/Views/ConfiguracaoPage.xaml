@@ -119,6 +119,27 @@
                         </Grid>
                     </Border>
 
+
+                    <Border Stroke="Black"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 10,10,10,10">
+                        <Grid Margin="20,5,20,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="40"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <CheckBox Grid.Column="0"
+                                      HorizontalOptions="StartAndExpand"
+                                      Color="Red"
+                                      IsChecked="{Binding Cfg.ExportarSomentePesagensUltimoNrPesagem}"
+                                      x:Name="Exportar_CheckBox"/>
+                            <Label Grid.Column="1"
+                                    VerticalOptions="Center"
+                                    HorizontalTextAlignment="Start"
+                                    Text="Exportar apenas pesagens do último nr. de pesagem"/>
+                        </Grid>
+                    </Border>
+
                     <Button Margin="1,5,1,5"
                             Text="Confirmar Configurações"
                             BackgroundColor="Gray"
