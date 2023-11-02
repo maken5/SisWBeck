@@ -23,6 +23,7 @@
             <cv:WeithtStatusToConnectedBoolConverter x:Key="WeithtStatusToConnectedBoolConverter"/>
             <cv:BoolToPesoEstavelParaSalvarColorConverter x:Key="BoolToPesoEstavelParaSalvarColorConverter"/>
             <cv:WeightStatusIdentificacaoToBoolConverter x:Key="WeightStatusIdentificacaoToBoolConverter"/>
+            <cv:BoolToIdentificaoSalvaColorConverter x:Key="BoolToIdentificaoSalvaColorConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
@@ -87,16 +88,19 @@
                     <!--#region Identificação-->
                     <Frame BorderColor="Black"
                            CornerRadius="10"
+                           BackgroundColor="{Binding IsIdentificacaoSalva, Converter={StaticResource BoolToIdentificaoSalvaColorConverter}}"
                            HasShadow="True">
                         <Entry Placeholder="Identificação"
-                               BackgroundColor="Transparent"
                                x:Name="brinco"
-                               FontSize="20"
                                MaxLength="20"
                                Keyboard="{Binding TipoTeclado}"
                                Text="{Binding Identificacao}"
-                               ClearButtonVisibility="WhileEditing"
-                               TextColor="Black"/>
+                               FontSize="Large"
+                               BackgroundColor="Transparent"
+                               HorizontalTextAlignment="End"
+                               HeightRequest="50"
+                               TextColor="Black"
+                               ClearButtonVisibility="WhileEditing"/>
                     </Frame>
                     <!--#endregion-->
                     
@@ -117,6 +121,7 @@
                                 HorizontalOptions="Start"
                                 IsEnabled="{Binding Balanca.Status, Converter={StaticResource WeithtStatusToConnectedBoolConverter}}"
                                 Command="{Binding ZerarCommand}"
+                                Clicked="Button_Clicked"
                                 TextColor="Black"/>
                         <Button CornerRadius="10"
                                 Text="Salvar"
@@ -126,6 +131,7 @@
                                 WidthRequest="120"
                                 Margin="5,6,0,0"
                                 FontSize="Small"
+                                Clicked="Button_Clicked"
                                 TextColor="Black"
                                 Command="{Binding RegistrarCommand}"
                                 HorizontalOptions="End">

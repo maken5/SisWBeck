@@ -25,6 +25,7 @@ namespace SisWBeck.ViewModels
         private Config config;
         
         private ControleLotes _controleLote;
+        private int UltimoPesoRegistrado = 0;
         #endregion
         #region ctor ---------------------------------------------------------------------
         public PesagemViewModel(SISWBeckContext context,
@@ -34,6 +35,19 @@ namespace SisWBeck.ViewModels
             this.bluetoothHelper = bluetoothHelper;
             this.config = context.GetConfig();
             this.balanca = new Balanca(bluetoothHelper, config);
+            this.balanca.PropertyChanged += Balanca_PropertyChanged;
+        }
+
+        private void Balanca_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Balanca.Peso) && UltimoPesoRegistrado>0)
+            {
+                if (Balanca.Peso < UltimoPesoRegistrado / 2)
+                {
+                    UltimoPesoRegistrado = 0;
+                    Identificacao = "";
+                }
+            }
         }
         #endregion
 
@@ -63,7 +77,20 @@ namespace SisWBeck.ViewModels
         public string Identificacao
         {
             get => _identificacao;
-            set => Set(ref _identificacao, value);
+            set
+            {
+                if (Set(ref _identificacao, value))
+                {
+                    IsIdentificacaoSalva = false;
+                }
+            }
+        }
+
+        private bool _IsIdentificacaoSalva = false;
+        public bool IsIdentificacaoSalva
+        {
+            get => _IsIdentificacaoSalva;
+            private set =>Set(ref _IsIdentificacaoSalva, value);
         }
 
         #endregion
@@ -126,7 +153,7 @@ namespace SisWBeck.ViewModels
                 {
                     try
                     {
-                        await Lote.RemovePesagem(Lote.PesagemSelecionada);
+                        await Lote.RemovePesagem();
                     }catch (Exception ex)
                     {
                         await dialogService.MessageError("Erro removendo pesagem", ex.Message);
@@ -149,12 +176,19 @@ namespace SisWBeck.ViewModels
         [RelayCommand]
         async Task Registrar()
         {
-            //if (!string.IsNullOrWhiteSpace(Identificacao) && 
-            //    ((Balanca?.Status ?? WeightStats.Desconectado) == WeightStats.Estavel) &&
-            //    Balanca.Peso>0)
+            if (!string.IsNullOrWhiteSpace(Identificacao) &&
+                (Balanca.Status  == WeightStats.Estavel) &&
+                Balanca.Peso > 0)
             {
-                //await Lote.AddPesagem(Identificacao, Balanca.Peso);
-                await Lote.AddPesagem(Identificacao, 343);
+                if (Lote.IdentificacaoJaSalva(Identificacao))
+                {
+                    bool salvar = await dialogService.InputAlert("Pesagem já salva!",
+                                        $"O animal {Identificacao} já foi pesado na pesagem {Lote.NrPesagem}, atualizar o peso?");
+                    if (!salvar) return;
+                }
+                UltimoPesoRegistrado = Balanca.Peso;
+                await Lote.SavePesagem(Identificacao, UltimoPesoRegistrado);
+                IsIdentificacaoSalva = true;
             }
         }
 
@@ -170,7 +204,9 @@ namespace SisWBeck.ViewModels
                 {
                     if (balanca != null)
                     {
+                        balanca.PropertyChanged -= Balanca_PropertyChanged;
                         try { balanca.Stop(); } catch { }
+
                     }
                     balanca = null;
                 }

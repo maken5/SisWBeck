@@ -27,7 +27,7 @@ namespace SisWBeck.Modelo
         public string Nome => this.Lote?.Nome;
         public int? NrPesagem => this.Lote?.NrPesagem;
         public string IdentificacaoLote => $"Lote: {Lote?.Nome} ({Lote?.Data.ToString("dd/MM/yyyy")})";
-        public string DadosLote => $"Nr Pesagem:{Lote?.NrPesagem} - Animais:{Lote?.NrAnimais ?? 0}";
+        public string DadosLote => $"Nr Pesagem:{Lote?.NrPesagem} - Animais:{Lote.Pesagens.Count}/{Lote?.NrAnimais ?? 0}";
 
         [ObservableProperty]
         private ObservableCollection<Pesagens> pesagens;
@@ -51,36 +51,78 @@ namespace SisWBeck.Modelo
 
         public bool IsPesagemSelecionada => PesagemSelecionada != null;
 
+        public bool IdentificacaoJaSalva(string identificacao)
+        {
+            return Pesagens.Where(p => p.Codigo == identificacao).Any();
+        }
 
-        public async Task AddPesagem(string identificacao, int peso)
+        public Pesagens GetPesagem(string identificacao)
+        {
+            return Pesagens.Where(p => p.Codigo == identificacao).FirstOrDefault();
+        }
+
+
+        public async Task SavePesagem(Pesagens pesagem)
+        {
+            if (pesagem == null) return;
+            await db.Save(pesagem);
+            await db.SaveChangesAsync();
+        }
+
+        public async Task SavePesagem(string identificacao, int peso)
         {
             if (!String.IsNullOrWhiteSpace(identificacao))
             {
-                Pesagens pesagem = new Pesagens();
-                pesagem.Peso = peso;
-                pesagem.Codigo = identificacao;
-                pesagem.Lote = this.Lote;
-                await db.Add(pesagem);
-                await db.SaveChangesAsync();
-                if (Lote.Pesagens == null)
+                bool inserir = false;
+                Pesagens pesagem = this.Pesagens.Where(p=>p.Codigo == identificacao).FirstOrDefault();
+                if (pesagem==null)
+                {
+                    pesagem= new Pesagens();
+                    pesagem.Peso = peso;
+                    pesagem.Codigo = identificacao;
+                    pesagem.Lote = this.Lote;
+                    inserir = true;
+                }
+                else
+                {
+                    pesagem.Data = DateTime.Now;
+                    pesagem.Peso = peso;
+                }
+                await SavePesagem(pesagem);
+                if (Lote.Pesagens == null) 
                     Lote.Pesagens = new List<Pesagens>();
-                Lote.Pesagens.Add(pesagem);
-                Pesagens.Insert(0, pesagem);
+                if (inserir)
+                {
+                    Lote.Pesagens.Add(pesagem);
+                    Pesagens.Insert(0, pesagem);
+                }
+                else
+                {
+                    Pesagens.Remove(pesagem);
+                    Pesagens.Insert(0, pesagem);
+                }
                 if (!Animais.Contains(identificacao))
                 {
                     Animais.Add(identificacao);
                     this.OnPropertyChanged(nameof(DadosLote));
                 }
+                OnPropertyChanged(nameof(Pesagens));
+                OnPropertyChanged(nameof(DadosLote));
             }
         }
 
-        public async Task RemovePesagem(Pesagens pesagem)
+        public async Task RemovePesagem()
         {
             if (PesagemSelecionada != null)
             {
+                string codigo = PesagemSelecionada.Codigo;
                 db.Pesagens.Remove(PesagemSelecionada);
                 Pesagens.Remove(PesagemSelecionada);
+                OnPropertyChanged(nameof(Pesagens));
                 await db.SaveChangesAsync();
+                if (db.Pesagens.GroupBy(p => p.Codigo == codigo).Select(g => g.Key).Any())
+                    Animais.Remove(codigo);
+                OnPropertyChanged(nameof(DadosLote));
             }
         }
 

@@ -82,11 +82,14 @@ namespace SisWBeck.DB
             }
         }
 
-        public async Task Add(Pesagens Pesagem)
+        public async Task Save(Pesagens Pesagem)
         {
             if (Pesagem != null)
             {
-                Pesagens.Add(Pesagem);
+                if (Pesagem.Id == 0)
+                    await Pesagens.AddAsync(Pesagem);
+                else
+                    Pesagens.Update(Pesagem);
                 await SaveChangesAsync();
             }
         }

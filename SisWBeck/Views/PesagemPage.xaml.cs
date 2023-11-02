@@ -37,6 +37,9 @@ namespace SisWBeck.Views
             base.OnDisappearing();
         }
 
-
+        private void Button_Clicked(object sender, EventArgs e)
+        {
+            Platforms.KeyboardHelper.HideKeyboard();
+        }
     }
 }

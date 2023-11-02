@@ -16,6 +16,8 @@ namespace SisWBeck.Comm
 
         #region ctor ---------------------------------------------------------------------
 
+        
+
         public Balanca(BluetoothHelper bluetoothHelper, Config config)
         {
             this.bluetoothHelper = bluetoothHelper;
