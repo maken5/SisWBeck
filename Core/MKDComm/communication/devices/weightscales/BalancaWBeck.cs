@@ -368,9 +368,9 @@ namespace MKDComm.communication.devices.weightscales
 
         #region classe -------------------------------------------------------------------------------
         protected static BalancaWBeck balancaWBeck { get; set; }
-        public static BalancaWBeck Get (HALCommMediaBase com, bool forceNew = false)
+        public static BalancaWBeck Get(HALCommMediaBase com, bool forceNew = false)
         {
-            if(balancaWBeck != null && com != null && balancaWBeck.Comm.getNameComm() != com.getNameComm())
+            if (balancaWBeck != null && com != null && balancaWBeck.Comm.getNameComm() != com.getNameComm())
             {
                 forceNew = true;
             }
@@ -385,7 +385,7 @@ namespace MKDComm.communication.devices.weightscales
                     }
                     catch
                     {
-                        
+
                     }
 
                     balancaWBeck = null;
@@ -422,7 +422,7 @@ namespace MKDComm.communication.devices.weightscales
         #region callback comm balança-----------------------------------------------------------------
         private void onError(Exception ex)
         {
-            
+
             if (tentativas_retransmissao_comando < 3 && this.Comm.isOpen())
             {
                 tentativas_retransmissao_comando++;
@@ -569,12 +569,12 @@ namespace MKDComm.communication.devices.weightscales
                                 if (onReadConfigEnd != null)
                                 {
                                     bool balancaTravada = String.Compare(Op1, "locked", true) == 0;
-                                    if (balancaTravada && this.SerialNumber!=null)
+                                    if (balancaTravada && this.SerialNumber != null)
                                     {
                                         try
                                         {
                                             uint serial = Convert.ToUInt32(this.SerialNumber);
-                                            int license = (int) calculateKey(serial);
+                                            int license = (int)calculateKey(serial);
                                             SetLicense(license);
                                             SendOnReadingInformation(1, "Liberando Licença");
                                         }
@@ -649,7 +649,7 @@ namespace MKDComm.communication.devices.weightscales
                         {
                             memoria = ((ProtocoloModuloPesagemSMAX.SensorNameResponse)rp).id;
                             modulo.RepeatDisplayedWeightContinuously();
-                        }else
+                        } else
                         {
                             modulo.RepeatDisplayedWeightContinuously();
                         }
@@ -757,10 +757,10 @@ namespace MKDComm.communication.devices.weightscales
         /// <returns></returns>
         public bool CalibrarPesoAtualComo(int pesoPadrao, int fundoEscala)
         {
-            if (modulo.IsOpen() && pesoPadrao>50 && fundoEscala>=pesoPadrao)
+            if (modulo.IsOpen() && pesoPadrao > 50 && fundoEscala >= pesoPadrao)
             {
-                modulo.sendExtendedCommand("Calibrar", new object[] {fundoEscala, pesoPadrao, 2014 });
-                Thread t = new Thread(new ThreadStart(() => 
+                modulo.sendExtendedCommand("Calibrar", new object[] { fundoEscala, pesoPadrao, 2014 });
+                Thread t = new Thread(new ThreadStart(() =>
                 {
                     Thread.Sleep(7000);
                     modulo.sendExtendedCommand("Write", new object[] { 2014 });
@@ -781,9 +781,9 @@ namespace MKDComm.communication.devices.weightscales
         /// <returns></returns>
         public bool SetCalibracaoDeMemoria(int idx, int nrPontos, int pesoPadrao, int fundoEscala, string sensorName)
         {
-            if (modulo.IsOpen() && idx >=0 && idx < 5 && pesoPadrao > 50 && fundoEscala > pesoPadrao && !String.IsNullOrWhiteSpace(sensorName))
+            if (modulo.IsOpen() && idx >= 0 && idx < 5 && pesoPadrao > 50 && fundoEscala > pesoPadrao && !String.IsNullOrWhiteSpace(sensorName))
             {
-                modulo.sendExtendedCommand("SetCalibData", 
+                modulo.sendExtendedCommand("SetCalibData",
                     new object[] { idx, nrPontos, pesoPadrao, fundoEscala, sensorName, 2014 });
 
                 return true;
@@ -830,7 +830,7 @@ namespace MKDComm.communication.devices.weightscales
         /// <returns></returns>
         public bool SetLicense(int key)
         {
-            if (modulo.IsOpen() && key>=0)
+            if (modulo.IsOpen() && key >= 0)
             {
                 modulo.sendExtendedCommand("SetLicenseKey", new object[] { key, 2014 });
                 this.WriteMemory();
@@ -852,10 +852,10 @@ namespace MKDComm.communication.devices.weightscales
                 {
                     modulo.sendExtendedCommand(ligar ? "AutozeroOn" : "AutozeroOff");
                     return true;
-                }catch(Exception ex)
+                } catch (Exception ex)
                 {
                     if (onErrorReceived != null)
-                        onErrorReceived(ex); 
+                        onErrorReceived(ex);
                 }
             return false;
         }
@@ -868,7 +868,7 @@ namespace MKDComm.communication.devices.weightscales
         /// <returns>True se o comando foi enviado com sucesso, caso contrário, false</returns>
         public bool SetAutozero(int valorAutozero)
         {
-            if (StatusDoModulo == StatusModulo.Pesando && valorAutozero>0 && valorAutozero<10)
+            if (StatusDoModulo == StatusModulo.Pesando && valorAutozero > 0 && valorAutozero < 10)
                 try
                 {
                     modulo.sendExtendedCommand("SetAutozero", new object[] { valorAutozero });
@@ -893,7 +893,7 @@ namespace MKDComm.communication.devices.weightscales
         {
             if (StatusDoModulo != StatusModulo.Pesando)
                 return false;
-            if (memoria>=0 && memoria < 5)
+            if (memoria >= 0 && memoria < 5)
             {
                 try
                 {
@@ -913,6 +913,22 @@ namespace MKDComm.communication.devices.weightscales
                     onErrorReceived(new Exception("Valor de índice de memória deve estar no intervalo [0, 4]"));
                 return false;
             }
+        }
+
+        public bool SendCommandReadMemoria()
+        {
+            if (StatusDoModulo == StatusModulo.Pesando )
+                try
+                {
+                    modulo.sendExtendedCommand("GetCalibData");//GetSensorName
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    if (onErrorReceived != null)
+                        onErrorReceived(ex);
+                }
+            return false;
         }
 
         #endregion

@@ -11,12 +11,10 @@ using static MKDComm.communication.devices.weightscales.BalancaWBeck;
 
 namespace SisWBeck.Comm
 {
-    public class Balanca : ObservableObject, INotifyPropertyChanged, IDisposable
+    public partial class Balanca : ObservableObject, INotifyPropertyChanged, IDisposable
     {
 
         #region ctor ---------------------------------------------------------------------
-
-        
 
         public Balanca(BluetoothHelper bluetoothHelper, Config config)
         {
@@ -35,10 +33,22 @@ namespace SisWBeck.Comm
             }
         }
 
+
+
         #endregion
 
         #region Atributos e métodos privados ---------------------------------------------
-        
+        private enum BalancaStatus
+        {
+            Descontectado,
+            Conectando,
+            LendoConfig,
+            Pesando
+        };
+
+
+        private BalancaStatus status = BalancaStatus.Descontectado;
+
         //Objetos (serviços e dados)
         private BluetoothHelper bluetoothHelper;
         private Config config;
@@ -47,7 +57,6 @@ namespace SisWBeck.Comm
 
         //atributos de controle interno
         private bool disposedValue;
-        private bool lerConfiguracoes=true;
         private object _lock = new object();
         private bool ForceUpdate = false;
         private int reconexoes = 0;
@@ -113,6 +122,9 @@ namespace SisWBeck.Comm
                 return prop;
             }
         }
+
+        private int? IdCalibracaoSelecionada = null;
+
         #endregion
 
         #region Propriedades públicas ----------------------------------------------------
@@ -191,6 +203,17 @@ namespace SisWBeck.Comm
             }
         }
         public bool PesoPositivo => Peso>0 && (Status == WeightStats.Pesando || Status == WeightStats.Estavel);
+
+        public string AutoZeroStr => wbeck?.AutoZeroStatus == null ? "AutoZero OFF" : wbeck.AutoZeroStatus.Value ? "AutoZero ON" : "AutoZero OFF";
+
+        public string MemoriaStr => CalibracaoSelecionada == null ? "Memória ?" : CalibracaoSelecionada.Nome;
+        
+
+        [ObservableProperty]
+        private ObservableCollection<MemoriasCalibracoes> calibracoes;
+
+        public MemoriasCalibracoes CalibracaoSelecionada => Calibracoes?.Where(c => c.Id == IdCalibracaoSelecionada.Value && c.Id>0).FirstOrDefault();
+
         #endregion
 
         #endregion
@@ -224,7 +247,6 @@ namespace SisWBeck.Comm
             ForceUpdate = true;
             if (wbeck != null)
             {
-                lerConfiguracoes = true;
                 try { wbeck.Start(); } catch { }
             }
         }
@@ -233,6 +255,14 @@ namespace SisWBeck.Comm
             if (wbeck != null)
             {
                 try { wbeck.Stop(); } catch { }
+            }
+        }
+
+        public void ToogleAutoZero()
+        {
+            if (wbeck.AutoZeroStatus != null)
+            {
+                wbeck.SetAutozero(!wbeck.AutoZeroStatus.Value);
             }
         }
 
@@ -260,23 +290,24 @@ namespace SisWBeck.Comm
 
         private void OnConfigEnd(ProtocoloModuloPesagemSMAX.SensorCalibrationResponse[] calibracoes, int? calibarcaoIdx, bool autozero, string numeroSerie, bool requireLicenseKey)
         {
-            //EnabledConnectingFlag = true;
-            //WeightVisibility = false;
-            //Weight = "";
-            //TextAlert = "Leitura de Configuração finalizada";
-            //TextAlertVisibility = true;
-            //WeightStats = WeightStats.Iniciando;
-            //WeightStatus = "Confgiuração Finalizada";
-            //WeightTextColor = "Black";
-            //WeightBackgroundColor = "White";
-            //SaveButtonColor = "LightGray";
-            //KgVisibility = false;
-
+            ObservableCollection<MemoriasCalibracoes> memoriasCalibracoes = new ObservableCollection<MemoriasCalibracoes>();
+            if (calibracoes!=null && calibracoes.Length > 0 )
+            {
+                var lista = calibracoes.OrderBy(C => C.id).ToList();
+                foreach( var item in lista)
+                {
+                    memoriasCalibracoes.Add(new MemoriasCalibracoes(item));
+                }
+            }
+            IdCalibracaoSelecionada = wbeck.Memoria;
+            Calibracoes = memoriasCalibracoes;
+            RaisePropertyChanged(nameof(CalibracaoSelecionada));
+            RaisePropertyChanged(nameof(MemoriaStr));
+            RaisePropertyChanged(nameof(AutoZeroStr));
         }
 
         private void ReadingInfos(int step, string name)
         {
-            lerConfiguracoes = false;
             //EnabledConnectingFlag = true;
             //WeightVisibility = false;
             //Weight = "";

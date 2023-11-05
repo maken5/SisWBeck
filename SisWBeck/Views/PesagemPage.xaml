@@ -29,7 +29,7 @@
     <ContentPage.Content>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="270"/>
+                <RowDefinition x:Name="SessaoPesagem" Height="270"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
@@ -38,9 +38,9 @@
             <Frame BorderColor="Black"
                    CornerRadius="10"
                    Grid.Row="0"
-                   HasShadow="True">
+                   HasShadow="True"> 
+                
                 <StackLayout>
-                    
                     <!--#region Peso-->
                     <Grid x:Name="gridPeso">
                         <Grid.BackgroundColor>
@@ -98,43 +98,56 @@
                                FontSize="Large"
                                BackgroundColor="Transparent"
                                HorizontalTextAlignment="End"
-                               HeightRequest="50"
+                               HeightRequest="45"
                                TextColor="Black"
                                ClearButtonVisibility="WhileEditing"/>
                     </Frame>
                     <!--#endregion-->
                     
                     <!--#region Comandos -->
-                    <FlexLayout HorizontalOptions="Center"
-                                JustifyContent="Center"
+
+                    <Grid Margin="0,6,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button CornerRadius="10"
+                                Text="Balança"
+                                Grid.Column="0"
+                                HeightRequest="40"
                                 VerticalOptions="Center"
-                                AlignItems="Center"
-                                AlignContent="Center">
+                                Margin="0,0,0,5"
+                                FontSize="Small"
+                                BackgroundColor="LightGray"
+                                HorizontalOptions="FillAndExpand"
+                                Clicked="ButtonBalanca_Clicked"
+                                TextColor="Black"/>
                         <Button CornerRadius="10"
                                 Text="Ø"
                                 HeightRequest="40"
                                 VerticalOptions="Center"
-                                Margin="0,6,0,0"
+                                Grid.Column="1"
+                                Margin="5,0,0,5"
                                 FontSize="Small"
-                                WidthRequest="120"
                                 BackgroundColor="LightGray"
-                                HorizontalOptions="Start"
+                                HorizontalOptions="FillAndExpand"
                                 IsEnabled="{Binding Balanca.Status, Converter={StaticResource WeithtStatusToConnectedBoolConverter}}"
                                 Command="{Binding ZerarCommand}"
                                 Clicked="Button_Clicked"
                                 TextColor="Black"/>
                         <Button CornerRadius="10"
-                                Text="Salvar"
                                 BackgroundColor="{Binding Balanca.PesoEstavelParaRegistrar, Converter{StaticResource BoolToPesoEstavelParaSalvarColorConverter}}"
+                                Text="Salvar"
+                                Grid.Column="2"
                                 FontAttributes="Bold"
                                 HeightRequest="40"
-                                WidthRequest="120"
-                                Margin="5,6,0,0"
+                                Margin="5,0,0,0"
                                 FontSize="Small"
                                 Clicked="Button_Clicked"
                                 TextColor="Black"
                                 Command="{Binding RegistrarCommand}"
-                                HorizontalOptions="End">
+                                HorizontalOptions="FillAndExpand">
                             <Button.IsEnabled>
                                 <MultiBinding Converter="{StaticResource WeightStatusIdentificacaoToBoolConverter}">
                                     <Binding Path="Identificacao"/>
@@ -142,10 +155,46 @@
                                 </MultiBinding>
                             </Button.IsEnabled>
                         </Button>
-                    </FlexLayout>
+                    </Grid>
                     <!--#endregion-->
-                    
+
+                    <Grid Margin="0,20,0,0">
+                        <!--<Grid.RowDefinitions>
+                            <RowDefinition Height="50*"/>
+                            <RowDefinition Height="150*"/>
+                        </Grid.RowDefinitions>-->
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="75*"/>
+                            <ColumnDefinition Width="125*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Row="0" 
+                                HeightRequest="30" 
+                                Grid.Column="0" 
+                                Text="{Binding Balanca.AutoZeroStr}" 
+                                Command="{Binding ToogleAutozeroCommand}"
+                                FontSize="Small" 
+                                TextColor="Black" 
+                                Margin="0,0,5,0" 
+                                Padding="0,0,0,0"/>
+                        <!--<Button Grid.Row="0" 
+                                HeightRequest="30" 
+                                Grid.Column="1" 
+                                Text="AutoOFF"  
+                                FontSize="Small" 
+                                Margin="1,0,1,0" 
+                                Padding="0,0,0,0"/>-->
+                        <Button Grid.Row="0" 
+                                HeightRequest="30" 
+                                Grid.Column="1" 
+                                BackgroundColor="Green"
+                                Text="{Binding Balanca.MemoriaStr}" 
+                                Command="{Binding SelecionaMemoriaCommand}"
+                                FontSize="Small" 
+                                Margin="5,0,0,0" 
+                                Padding="0,0,0,0"/>
+                    </Grid>
                 </StackLayout>
+                
             </Frame>
             <!--#endregion-->
             

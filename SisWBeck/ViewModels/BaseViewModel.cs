@@ -12,7 +12,7 @@ public partial class BaseViewModel : ObservableObject
 
 	protected bool IsModificado = false;
 
-    protected bool Set<T>([NotNullIfNotNull(nameof(newValue))] ref T field, T newValue, [CallerMemberName] string? propertyName = null)
+    protected bool Set<T>([NotNullIfNotNull(nameof(newValue))] ref T field, T newValue, [CallerMemberName] string propertyName = null)
 	{
         IsModificado |= SetProperty(ref field, newValue, propertyName);
 		return IsModificado;

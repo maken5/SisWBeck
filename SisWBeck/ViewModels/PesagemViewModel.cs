@@ -192,6 +192,22 @@ namespace SisWBeck.ViewModels
             }
         }
 
+        [RelayCommand]
+        void ToogleAutozero()
+        {
+            if (Balanca != null && 
+                (Balanca.Status == WeightStats.Estavel || Balanca.Status== WeightStats.Pesando))
+            {
+                Balanca.ToogleAutoZero();
+            }
+        }
+
+        [RelayCommand]
+        void SelecionaMemoria()
+        {
+
+        }
+
         #endregion
 
 
