@@ -198,14 +198,26 @@ namespace SisWBeck.ViewModels
             if (Balanca != null && 
                 (Balanca.Status == WeightStats.Estavel || Balanca.Status== WeightStats.Pesando))
             {
-                Balanca.ToogleAutoZero();
+                Balanca.ToogleAutoZero();//TODO: atualização da configuração , e implementação correta do CanExecute
             }
         }
 
-        [RelayCommand]
-        void SelecionaMemoria()
-        {
+        //TODO: ao executar a primeira vez, a tela inicial não verifica e respeita o nr de pesagem do lote para perguntar se continua a pesagem.
+        //TODO: implementar ou remover o botão "MAIS"
 
+        [RelayCommand]
+        async Task SelecionaMemoria()
+        {
+            string s = Balanca.MemoriaStr;
+            if (Balanca.Calibracoes!=null && Balanca.Calibracoes.Any())
+            {
+                List<string> memorias = Balanca.Calibracoes.Select(x => x.ToString()).OrderBy(x=>x).ToList();
+                string str = await dialogService.SelectDialog("Selecione a Calibração", memorias);
+                if (!String.IsNullOrWhiteSpace(str))
+                {
+                    //TODO: comando para troca de memória, atualização da configuração e implementação correta do CanExecute
+                }
+            }
         }
 
         #endregion

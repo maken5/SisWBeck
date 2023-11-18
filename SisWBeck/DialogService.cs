@@ -25,6 +25,12 @@ namespace SisWBeck
             return result;
         }
 
+        public async Task<string> SelectDialog(string title, List<string> options)
+        {
+            string resposta = await Shell.Current.CurrentPage.DisplayActionSheet(title, "Cancelar", null, options.ToArray());
+            return resposta;
+        }
+
         public async Task<bool> InputAlert(string title, string message, string confirmar = "SIM", string cancelar = "NÃO")
         {
             bool? resposta = await Shell.Current.CurrentPage.DisplayAlert(title, message, confirmar, cancelar);

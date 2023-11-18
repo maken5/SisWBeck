@@ -206,7 +206,9 @@ namespace SisWBeck.Comm
 
         public string AutoZeroStr => wbeck?.AutoZeroStatus == null ? "AutoZero OFF" : wbeck.AutoZeroStatus.Value ? "AutoZero ON" : "AutoZero OFF";
 
-        public string MemoriaStr => CalibracaoSelecionada == null ? "Memória ?" : CalibracaoSelecionada.Nome;
+        public string MemoriaStr => Calibracoes?.Where(c => c.Id == IdCalibracaoSelecionada.Value && c.Id >= 0).FirstOrDefault() == null ? 
+                                                            "Memória ?" :
+                                                            Calibracoes?.Where(c => c.Id == IdCalibracaoSelecionada.Value && c.Id >= 0).FirstOrDefault().Nome;
         
 
         [ObservableProperty]

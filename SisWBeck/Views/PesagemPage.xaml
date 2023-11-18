@@ -113,7 +113,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Button CornerRadius="10"
-                                Text="Balança"
+                                Text="Config."
                                 Grid.Column="0"
                                 HeightRequest="40"
                                 VerticalOptions="Center"
@@ -158,38 +158,57 @@
                     </Grid>
                     <!--#endregion-->
 
-                    <Grid Margin="0,20,0,0">
-                        <!--<Grid.RowDefinitions>
+                    <Grid Margin="0,10,0,0">
+                        <Grid.RowDefinitions>
                             <RowDefinition Height="50*"/>
-                            <RowDefinition Height="150*"/>
-                        </Grid.RowDefinitions>-->
+                            <RowDefinition Height="50*"/>
+                        </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="75*"/>
-                            <ColumnDefinition Width="125*"/>
+                            <ColumnDefinition Width="115*"/>
+                            <ColumnDefinition Width="55*"/>
                         </Grid.ColumnDefinitions>
+                        <Label Grid.Row="0"
+                               VerticalOptions="FillAndExpand"
+                               HorizontalOptions="FillAndExpand"
+                               HorizontalTextAlignment="Center"
+                                HeightRequest="25" 
+                               VerticalTextAlignment="Center"
+                               Text="{Binding Balanca.AutoZeroStr}" 
+                               FontSize="Small"
+                               TextColor="Black"
+                               Margin="0,0,5,0" />
                         <Button Grid.Row="0" 
-                                HeightRequest="30" 
-                                Grid.Column="0" 
-                                Text="{Binding Balanca.AutoZeroStr}" 
+                                Grid.Column="1" 
+                                BorderColor="Black"
+                                BorderWidth="2"
                                 Command="{Binding ToogleAutozeroCommand}"
-                                FontSize="Small" 
-                                TextColor="Black" 
-                                Margin="0,0,5,0" 
+                                BackgroundColor="Transparent"
+                                HorizontalOptions="FillAndExpand"
+                                VerticalOptions="FillAndExpand"
+                                Text="Trocar"
+                                FontSize="Small"
+                                Margin="5,0,5,0" 
                                 Padding="0,0,0,0"/>
-                        <!--<Button Grid.Row="0" 
-                                HeightRequest="30" 
+                        <Label Grid.Row="1"
+                               Grid.Column="0"
+                               VerticalOptions="FillAndExpand"
+                               HorizontalOptions="FillAndExpand"
+                               HorizontalTextAlignment="Center"
+                               VerticalTextAlignment="Center"
+                               Text="{Binding Balanca.MemoriaStr}" 
+                               FontSize="Small"
+                               TextColor="Black"
+                               Margin="0,0,5,0" />
+                        <Button Grid.Row="1" 
                                 Grid.Column="1" 
-                                Text="AutoOFF"  
-                                FontSize="Small" 
-                                Margin="1,0,1,0" 
-                                Padding="0,0,0,0"/>-->
-                        <Button Grid.Row="0" 
-                                HeightRequest="30" 
-                                Grid.Column="1" 
-                                BackgroundColor="Green"
-                                Text="{Binding Balanca.MemoriaStr}" 
+                                BorderColor="Black"
+                                BorderWidth="2"
+                                BackgroundColor="Transparent"
+                                HorizontalOptions="FillAndExpand"
+                                VerticalOptions="FillAndExpand"
+                                Text="Trocar"
+                                FontSize="Small"
                                 Command="{Binding SelecionaMemoriaCommand}"
-                                FontSize="Small" 
                                 Margin="5,0,0,0" 
                                 Padding="0,0,0,0"/>
                     </Grid>
