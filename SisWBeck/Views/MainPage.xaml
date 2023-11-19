@@ -21,7 +21,6 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
-
         <dg:DataGrid Grid.Row="0" 
                      BackgroundColor="White"
                      ItemsSource="{Binding Lotes}" 
@@ -91,6 +90,10 @@
                     Padding="0,0,0,0"
                     Margin="1,1,1,1"/>
         </Grid>
+
+
+        <ActivityIndicator IsRunning="{Binding IsBusy}" Color="Orange" />
+
     </Grid>
     
     

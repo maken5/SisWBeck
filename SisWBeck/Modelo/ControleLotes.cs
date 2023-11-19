@@ -18,10 +18,19 @@ namespace SisWBeck.Modelo
             this.Lote = lote;
             this.db = db;
             int? LoteId = lote?.Id;
-            var lista = db.Pesagens.Where(p => p.LoteId == LoteId && p.NrPesagem == NrPesagem).OrderByDescending(p => p.Data).ToList();
-            Pesagens = new ObservableCollection<Pesagens>(lista);
-            var lista_animais = db.Pesagens.GroupBy(p => p.Codigo).Select(g => g.Key).ToList();
+            List<string> lista_animais;
+            if (Lote.Pesagens == null)
+            {
+                var lista = db.Pesagens.Where(p => p.LoteId == LoteId && p.NrPesagem == NrPesagem).OrderByDescending(p => p.Data).ToList();
+                Pesagens = new ObservableCollection<Pesagens>(lista);
+            }
+            else
+            {
+                Pesagens = new ObservableCollection<Pesagens>(Lote.Pesagens);
+            }
+            lista_animais = Pesagens.GroupBy(p => p.Codigo).Select(g => g.Key).ToList();
             Animais = new ObservableCollection<string>(lista_animais);
+
         }
 
         public string Nome => this.Lote?.Nome;

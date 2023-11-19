@@ -1,4 +1,5 @@
-﻿using Modelo.Entidades;
+﻿using Microsoft.EntityFrameworkCore;
+using Modelo.Entidades;
 using Modelo.Tipos;
 using SisWBeck.Converter;
 using SisWBeck.DB;
@@ -59,8 +60,18 @@ public partial class MainViewModel : BaseViewModel
     [RelayCommand]
     public async Task Pesar()
     {
+        IsBusy = true;
         if (Lote != null)
         {
+            if (Lote.Pesagens == null )
+            {
+                int nr_pesagem = context.Pesagens.Where(p => p.LoteId == Lote.Id).Max(p => p.NrPesagem);
+                Lote.Pesagens = await context.Pesagens.Where(p => p.LoteId == Lote.Id && p.NrPesagem == nr_pesagem).ToListAsync();
+                if (Lote.NrPesagem < nr_pesagem)
+                {
+                    Lote.NrPesagem = nr_pesagem;
+                }
+            }
             if (Lote.UltimaDataPesagem == null)
             {
                 if (Lote.NrPesagem<=0) Lote.NrPesagem = 1;
@@ -75,7 +86,10 @@ public partial class MainViewModel : BaseViewModel
                         $"O lote {Lote.Nome} está na sessão de pesagem número {Lote.NrPesagem}.\r\n A última pesagem foi feita em {Lote.UltimaDataPesagem.Value.Date}\r\n\r\nDeseja abrir uma nova sessão de pesagem ou continuar a sessão de pesagem anterior?",
                         $"Iniciar Pesagem {Lote.NrPesagem + 1}", $"Continuar Pesagem {Lote.NrPesagem}");
                     if (incrementarNrPesagem)
+                    {
                         Lote.NrPesagem++;
+                        await this.context.SaveChangesAsync();
+                    }
                 }
             }
             await dialogServicePesagem.ShowPesagem(Lote);
@@ -84,6 +98,7 @@ public partial class MainViewModel : BaseViewModel
         {
             await dialogService.MessageError("Nenhum lote selecionado", "Selecione um lote para efetuar pesagens");
         }
+        IsBusy = false;
     }
 
     [RelayCommand]
@@ -141,5 +156,8 @@ public partial class MainViewModel : BaseViewModel
 
     [ObservableProperty]
     private Lotes lote;
+
+    [ObservableProperty]
+    private bool isBusy = false;
 
 }

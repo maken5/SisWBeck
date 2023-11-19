@@ -23,6 +23,7 @@ namespace SisWBeck.ViewModels
         private bool disposedValue;
         private Balanca balanca;
         private Config config;
+        private DateTime dtUltimaPesagem = DateTime.MinValue;
         
         private ControleLotes _controleLote;
         private int UltimoPesoRegistrado = 0;
