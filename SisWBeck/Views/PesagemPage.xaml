@@ -332,20 +332,19 @@
                     BackgroundColor="White"
                     BorderWidth="2"
                     ImageSource="settings.png"/>-->
-                <!--<Button Grid.Column="2" 
-                    Text="Mais" 
+                <Button Grid.Column="2" 
+                    Text="Balança" 
                     FontSize="12"
                     TextColor="Black"
                     CornerRadius="10"
                     BorderColor="Black"
                     BackgroundColor="White"
                     BorderWidth="2"
-                    Command="{Binding OutrasOpcoesCommand}"
-                    ImageSource="bar_chart.png"/>-->
+                    Command="{Binding ReconectarBalancaCommand}"
+                    ImageSource="reconnect.png"/>
                 
             </Grid>
             <!--#endregion-->
-            
         </Grid>
     </ContentPage.Content>
 </ContentPage>

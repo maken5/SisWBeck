@@ -28,7 +28,7 @@
 
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg"  Color="#FFFFFF" BaseSize="256,256" />
+		<MauiIcon Include="Resources\AppIcon\appicon.svg" Color="#FFFFFF" BaseSize="256,256" />
 
 		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#FFFFFF" BaseSize="512,512" />
@@ -49,6 +49,7 @@
 	  <None Remove="Resources\Images\delete.png" />
 	  <None Remove="Resources\Images\ox.png" />
 	  <None Remove="Resources\Images\plus.png" />
+	  <None Remove="Resources\Images\reconnect.png" />
 	  <None Remove="Resources\Images\settings.png" />
 	  <None Remove="Resources\Images\share.png" />
 	  <None Remove="Resources\Images\undo.png" />

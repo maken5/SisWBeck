@@ -129,6 +129,8 @@ namespace SisWBeck.ViewModels
             private set =>Set(ref _IsIdentificacaoSalva, value);
         }
 
+        [ObservableProperty]
+        private bool canExecuteReconectar = true;
 
         #endregion
 
@@ -199,9 +201,21 @@ namespace SisWBeck.ViewModels
             }
         }
 
-        [RelayCommand]
-        void OutrasOpcoes()
+        [RelayCommand(CanExecute = nameof(CanExecuteReconectar))]
+        async Task ReconectarBalanca()
         {
+            CanExecuteReconectar = false;
+            ReconectarBalancaCommand.NotifyCanExecuteChanged();
+            bool reconectar = await dialogService.InputAlert("Conectar com a balança?", "Deseja reconectar com a balança? Esta ação finalizará a conexão com a balança e iniciará uma nova conexão.");
+            if (reconectar)
+            {
+                try { Balanca.Stop(); } catch { }
+                await Task.Delay(1000);
+                Balanca.Start();
+            }
+            await Task.Delay(2000);
+            ReconectarBalancaCommand.NotifyCanExecuteChanged();
+            CanExecuteReconectar = true;
         }
 
         [RelayCommand]
