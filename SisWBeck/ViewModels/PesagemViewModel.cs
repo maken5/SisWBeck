@@ -246,9 +246,6 @@ namespace SisWBeck.ViewModels
             SelecionaMemoriaCommand.NotifyCanExecuteChanged();
         }
 
-        //TODO: ao executar a primeira vez, a tela inicial não verifica e respeita o nr de pesagem do lote para perguntar se continua a pesagem.
-        //TODO: implementar ou remover o botão "MAIS"
-
         [RelayCommand(CanExecute =nameof(PodeExecutarAlteracaoConfigBalanca))]
         async Task SelecionaMemoria()
         {
