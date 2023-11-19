@@ -332,7 +332,7 @@
                     BackgroundColor="White"
                     BorderWidth="2"
                     ImageSource="settings.png"/>-->
-                <Button Grid.Column="2" 
+                <!--<Button Grid.Column="2" 
                     Text="Mais" 
                     FontSize="12"
                     TextColor="Black"
@@ -341,7 +341,7 @@
                     BackgroundColor="White"
                     BorderWidth="2"
                     Command="{Binding OutrasOpcoesCommand}"
-                    ImageSource="bar_chart.png"/>
+                    ImageSource="bar_chart.png"/>-->
                 
             </Grid>
             <!--#endregion-->
