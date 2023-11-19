@@ -65,8 +65,14 @@ public partial class MainViewModel : BaseViewModel
         {
             if (Lote.Pesagens == null )
             {
-                int nr_pesagem = context.Pesagens.Where(p => p.LoteId == Lote.Id).Max(p => p.NrPesagem);
-                Lote.Pesagens = await context.Pesagens.Where(p => p.LoteId == Lote.Id && p.NrPesagem == nr_pesagem).ToListAsync();
+                var pesagem = await context.Pesagens.Where(p => p.LoteId == Lote.Id).ToListAsync();
+                int nr_pesagem;
+                if (pesagem == null) pesagem = new List<Pesagens>();
+                if (pesagem.Any())
+                    nr_pesagem = pesagem.Max(p => p.NrPesagem);
+                else
+                    nr_pesagem = 1;
+                Lote.Pesagens = pesagem;
                 if (Lote.NrPesagem < nr_pesagem)
                 {
                     Lote.NrPesagem = nr_pesagem;

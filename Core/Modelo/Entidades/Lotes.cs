@@ -47,14 +47,14 @@ namespace Modelo.Entidades
             }
         }
 
-        public int? NrAnimais
+        public int NrAnimais
         {
             get
             {
                 int? nr = null;
                 if (Pesagens != null && Pesagens.Any())
                     nr = Pesagens.GroupBy(a => a.Codigo).Count();
-                return nr;
+                return nr ?? 0;
             }
         }
         

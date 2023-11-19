@@ -115,6 +115,20 @@
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-android33.0|AnyCPU'">
 	  <AndroidEnableProfiledAot>True</AndroidEnableProfiledAot>
+	  <AndroidKeyStore>False</AndroidKeyStore>
+	  <AndroidSigningStorePass>Aza2000</AndroidSigningStorePass>
+	  <AndroidSigningKeyAlias>wbeck</AndroidSigningKeyAlias>
+	  <AndroidSigningKeyPass>Aza2000</AndroidSigningKeyPass>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-android33.0|AnyCPU'">
+	  <AndroidPackageFormat>apk</AndroidPackageFormat>
+	  <AndroidUseAapt2>True</AndroidUseAapt2>
+	  <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
+	  <AndroidKeyStore>False</AndroidKeyStore>
+	  <AndroidSigningStorePass>Aza2000</AndroidSigningStorePass>
+	  <AndroidSigningKeyAlias>wbeck</AndroidSigningKeyAlias>
+	  <AndroidSigningKeyPass>Aza2000</AndroidSigningKeyPass>
 	</PropertyGroup>
 
 </Project>
