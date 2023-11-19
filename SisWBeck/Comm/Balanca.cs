@@ -267,8 +267,6 @@ namespace SisWBeck.Comm
             if (wbeck.AutoZeroStatus != null)
             {
                 retorno = wbeck.SetAutozero(!wbeck.AutoZeroStatus.Value);
-                if (retorno)
-                    retorno = wbeck.SendCommandReadAutozero();
             }
             return retorno;
         }
