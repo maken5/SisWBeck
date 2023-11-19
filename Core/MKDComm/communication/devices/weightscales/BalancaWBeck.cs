@@ -286,7 +286,7 @@ namespace MKDComm.communication.devices.weightscales
                     op1 = value;
                     if (!String.IsNullOrEmpty(op1))
                     {
-                        if (String.Compare(op1, "unlocked", true) == 0)//TODO: verificar locked e enviar comando de UNLOCK
+                        if (String.Compare(op1, "unlocked", true) == 0)//TODO: verificar locked e enviar comando de UNLOCK?
                         {
                         }
                         else
@@ -851,6 +851,7 @@ namespace MKDComm.communication.devices.weightscales
                 try
                 {
                     modulo.sendExtendedCommand(ligar ? "AutozeroOn" : "AutozeroOff");
+                    this.StatusDoModulo = StatusModulo.LendoAutozero;
                     return true;
                 } catch (Exception ex)
                 {
@@ -859,6 +860,26 @@ namespace MKDComm.communication.devices.weightscales
                 }
             return false;
         }
+
+
+        public bool SendCommandReadAutozero()
+        {
+            if (StatusDoModulo == StatusModulo.Pesando)
+                try
+                {
+                    modulo.sendExtendedCommand("GetAutozeroValue", null);
+                    this.StatusDoModulo = StatusModulo.LendoAutozero;
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    if (onErrorReceived != null)
+                        onErrorReceived(ex);
+                }
+            return false;
+        }
+
+
 
         /// <summary>
         /// Envia o comando para alterar o valor da função de autozero da balança.
@@ -898,6 +919,7 @@ namespace MKDComm.communication.devices.weightscales
                 try
                 {
                     modulo.sendExtendedCommand("SetMemory", new object[] { memoria, 2014 });
+                    this.StatusDoModulo = StatusModulo.LendoMemoria;
                     return true;
                 }
                 catch (Exception ex)
@@ -917,7 +939,7 @@ namespace MKDComm.communication.devices.weightscales
 
         public bool SendCommandReadMemoria()
         {
-            if (StatusDoModulo == StatusModulo.Pesando )
+            if (StatusDoModulo == StatusModulo.Pesando  )
                 try
                 {
                     modulo.sendExtendedCommand("GetCalibData");//GetSensorName

@@ -16,6 +16,9 @@ namespace SisWBeck.Comm
 
         #region ctor ---------------------------------------------------------------------
 
+        public delegate void OnBalancaStatusChanged(WeightStats status);
+        public delegate void OnBalancaReadConfigEnd();
+
         public Balanca(BluetoothHelper bluetoothHelper, Config config)
         {
             this.bluetoothHelper = bluetoothHelper;
@@ -38,16 +41,8 @@ namespace SisWBeck.Comm
         #endregion
 
         #region Atributos e métodos privados ---------------------------------------------
-        private enum BalancaStatus
-        {
-            Descontectado,
-            Conectando,
-            LendoConfig,
-            Pesando
-        };
 
 
-        private BalancaStatus status = BalancaStatus.Descontectado;
 
         //Objetos (serviços e dados)
         private BluetoothHelper bluetoothHelper;
@@ -133,6 +128,8 @@ namespace SisWBeck.Comm
         private int _peso;
         private WeightStats _status = WeightStats.Iniciando;
 
+        public event OnBalancaStatusChanged OnStatusChanged;
+        public event OnBalancaReadConfigEnd OnReadConfigEnd;
         public int Peso
         {
             get => Get(ref _peso);
@@ -171,6 +168,8 @@ namespace SisWBeck.Comm
                 if (value == WeightStats.Estavel && Peso>0)
                     PesoEstavelParaRegistrar = true;
                 else PesoEstavelParaRegistrar = false;
+                if (OnStatusChanged != null)
+                    OnStatusChanged(_status);
             }
         }
         #endregion
@@ -221,6 +220,8 @@ namespace SisWBeck.Comm
         #endregion
 
         #region Métodos públicos ---------------------------------------------------------
+
+
         public bool Zerar()
         {
             if (wbeck != null)
@@ -260,12 +261,29 @@ namespace SisWBeck.Comm
             }
         }
 
-        public void ToogleAutoZero()
+        public bool ToogleAutoZero()
         {
+            bool retorno  = false;
             if (wbeck.AutoZeroStatus != null)
             {
-                wbeck.SetAutozero(!wbeck.AutoZeroStatus.Value);
+                retorno = wbeck.SetAutozero(!wbeck.AutoZeroStatus.Value);
+                if (retorno)
+                    retorno = wbeck.SendCommandReadAutozero();
             }
+            return retorno;
+        }
+        public bool SelecionarMemoriaCalibracao(string memoria)
+        {
+            if (!String.IsNullOrWhiteSpace(memoria) && wbeck != null && Calibracoes != null)
+            {
+                int? NrMemoria = Calibracoes.Where(c => c.Nome == memoria).FirstOrDefault()?.Id;
+                if (NrMemoria != null && NrMemoria.Value >= 0)
+                {
+                    wbeck.SetMemoria(NrMemoria.Value);
+                    return true;
+                }
+            }
+            return false;
         }
 
         #endregion
@@ -306,6 +324,7 @@ namespace SisWBeck.Comm
             RaisePropertyChanged(nameof(CalibracaoSelecionada));
             RaisePropertyChanged(nameof(MemoriaStr));
             RaisePropertyChanged(nameof(AutoZeroStr));
+            if (OnReadConfigEnd != null) OnReadConfigEnd();
         }
 
         private void ReadingInfos(int step, string name)
@@ -345,7 +364,6 @@ namespace SisWBeck.Comm
                         wbeck.onErrorReceived -= new OnError(this.OnErrorReceive);
                         wbeck.onWeightStatusReceived -= new OnWeightStatusReceived(this.OnNewWeight);
                     }
-                    // TODO: dispose managed state (managed objects)
                     if (comm != null)
                     {
                         try
@@ -356,19 +374,10 @@ namespace SisWBeck.Comm
                         comm = null;
                     }
                 }
-
-                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-                // TODO: set large fields to null
                 disposedValue = true;
             }
         }
 
-        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        //~Balanca()
-        //{
-        //    // Não altere este código. Coloque o código de limpeza no método 'Dispose(bool disposing)'
-        //    Dispose(disposing: false);
-        //}
 
         public void Dispose()
         {

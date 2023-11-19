@@ -26,6 +26,48 @@ namespace SisWBeck.ViewModels
         
         private ControleLotes _controleLote;
         private int UltimoPesoRegistrado = 0;
+        private bool executandoAltercacoConfiguracaoBalanca = false;
+
+        private WeightStats lastWeightscaleStatus = WeightStats.Iniciando;
+        private  bool PodeExecutarAlteracaoConfigBalanca() => !executandoAltercacoConfiguracaoBalanca &&
+                                                          (balanca.Status == WeightStats.Pesando || balanca.Status == WeightStats.Estavel);
+
+
+        private void Balanca_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Balanca.Peso) && UltimoPesoRegistrado > 0)
+            {
+                if (Balanca.Peso < UltimoPesoRegistrado / 2)
+                {
+                    UltimoPesoRegistrado = 0;
+                    Identificacao = "";
+                }
+            }
+        }
+        private void Balanca_OnStatusChanged(WeightStats status)
+        {
+
+            if (lastWeightscaleStatus != status)
+            {
+                lastWeightscaleStatus = status;
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    ToogleAutozeroCommand.NotifyCanExecuteChanged();
+                    SelecionaMemoriaCommand.NotifyCanExecuteChanged();
+                });
+            }
+        }
+        private void Balanca_OnReadConfigEnd()
+        {
+            executandoAltercacoConfiguracaoBalanca = false;
+
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                ToogleAutozeroCommand.NotifyCanExecuteChanged();
+                SelecionaMemoriaCommand.NotifyCanExecuteChanged();
+            });
+
+        }
         #endregion
         #region ctor ---------------------------------------------------------------------
         public PesagemViewModel(SISWBeckContext context,
@@ -36,19 +78,12 @@ namespace SisWBeck.ViewModels
             this.config = context.GetConfig();
             this.balanca = new Balanca(bluetoothHelper, config);
             this.balanca.PropertyChanged += Balanca_PropertyChanged;
+            this.balanca.OnStatusChanged += Balanca_OnStatusChanged;
+            this.Balanca.OnReadConfigEnd += Balanca_OnReadConfigEnd;
         }
 
-        private void Balanca_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(Balanca.Peso) && UltimoPesoRegistrado>0)
-            {
-                if (Balanca.Peso < UltimoPesoRegistrado / 2)
-                {
-                    UltimoPesoRegistrado = 0;
-                    Identificacao = "";
-                }
-            }
-        }
+
+
         #endregion
 
         #region Propriedades públicas ----------------------------------------------------
@@ -92,6 +127,7 @@ namespace SisWBeck.ViewModels
             get => _IsIdentificacaoSalva;
             private set =>Set(ref _IsIdentificacaoSalva, value);
         }
+
 
         #endregion
 
@@ -192,32 +228,52 @@ namespace SisWBeck.ViewModels
             }
         }
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(PodeExecutarAlteracaoConfigBalanca))]
         void ToogleAutozero()
         {
+            executandoAltercacoConfiguracaoBalanca = true;
+            ToogleAutozeroCommand.NotifyCanExecuteChanged();
+            SelecionaMemoriaCommand.NotifyCanExecuteChanged();
             if (Balanca != null && 
                 (Balanca.Status == WeightStats.Estavel || Balanca.Status== WeightStats.Pesando))
             {
-                Balanca.ToogleAutoZero();//TODO: atualização da configuração , e implementação correta do CanExecute
+                if (Balanca.ToogleAutoZero())
+                    return;
             }
+            executandoAltercacoConfiguracaoBalanca = false;
+            ToogleAutozeroCommand.NotifyCanExecuteChanged();
+            SelecionaMemoriaCommand.NotifyCanExecuteChanged();
         }
 
         //TODO: ao executar a primeira vez, a tela inicial não verifica e respeita o nr de pesagem do lote para perguntar se continua a pesagem.
         //TODO: implementar ou remover o botão "MAIS"
 
-        [RelayCommand]
+        [RelayCommand(CanExecute =nameof(PodeExecutarAlteracaoConfigBalanca))]
         async Task SelecionaMemoria()
         {
+            executandoAltercacoConfiguracaoBalanca = true;
+            SelecionaMemoriaCommand.NotifyCanExecuteChanged();
+            ToogleAutozeroCommand.NotifyCanExecuteChanged();
             string s = Balanca.MemoriaStr;
             if (Balanca.Calibracoes!=null && Balanca.Calibracoes.Any())
             {
-                List<string> memorias = Balanca.Calibracoes.Select(x => x.ToString()).OrderBy(x=>x).ToList();
+                List<string> memorias = Balanca.Calibracoes.Select(x => x.Nome).OrderBy(x=>x).ToList();
                 string str = await dialogService.SelectDialog("Selecione a Calibração", memorias);
                 if (!String.IsNullOrWhiteSpace(str))
                 {
-                    //TODO: comando para troca de memória, atualização da configuração e implementação correta do CanExecute
+                    bool r = !Balanca.SelecionarMemoriaCalibracao(str);
+                    if (r != executandoAltercacoConfiguracaoBalanca)
+                    {
+                        executandoAltercacoConfiguracaoBalanca = r;
+                        SelecionaMemoriaCommand.NotifyCanExecuteChanged();
+                        ToogleAutozeroCommand.NotifyCanExecuteChanged();
+                    }
+                    return;
                 }
             }
+            executandoAltercacoConfiguracaoBalanca = false;
+            SelecionaMemoriaCommand.NotifyCanExecuteChanged();
+            ToogleAutozeroCommand.NotifyCanExecuteChanged();
         }
 
         #endregion
@@ -232,25 +288,17 @@ namespace SisWBeck.ViewModels
                 {
                     if (balanca != null)
                     {
-                        balanca.PropertyChanged -= Balanca_PropertyChanged;
+                        this.balanca.PropertyChanged -= Balanca_PropertyChanged;
+                        this.balanca.OnStatusChanged -= Balanca_OnStatusChanged;
+                        this.Balanca.OnReadConfigEnd -= Balanca_OnReadConfigEnd;
                         try { balanca.Stop(); } catch { }
 
                     }
                     balanca = null;
                 }
-
-                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-                // TODO: set large fields to null
                 disposedValue = true;
             }
         }
-
-        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        // ~PesagemViewModel()
-        // {
-        //     // Não altere este código. Coloque o código de limpeza no método 'Dispose(bool disposing)'
-        //     Dispose(disposing: false);
-        // }
 
         public void Dispose()
         {

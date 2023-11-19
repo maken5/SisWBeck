@@ -142,7 +142,7 @@
                                 Grid.Column="2"
                                 FontAttributes="Bold"
                                 HeightRequest="40"
-                                Margin="5,0,0,0"
+                                Margin="5,0,0,5"
                                 FontSize="Small"
                                 Clicked="Button_Clicked"
                                 TextColor="Black"
@@ -176,7 +176,7 @@
                                Text="{Binding Balanca.AutoZeroStr}" 
                                FontSize="Small"
                                TextColor="Black"
-                               Margin="0,0,5,0" />
+                               Margin="5,-2,0,2" />
                         <Button Grid.Row="0" 
                                 Grid.Column="1" 
                                 BorderColor="Black"
@@ -187,7 +187,7 @@
                                 VerticalOptions="FillAndExpand"
                                 Text="Trocar"
                                 FontSize="Small"
-                                Margin="5,0,5,0" 
+                                Margin="5,-2,0,2" 
                                 Padding="0,0,0,0"/>
                         <Label Grid.Row="1"
                                Grid.Column="0"
@@ -198,7 +198,7 @@
                                Text="{Binding Balanca.MemoriaStr}" 
                                FontSize="Small"
                                TextColor="Black"
-                               Margin="0,0,5,0" />
+                               Margin="5,2,0,0" />
                         <Button Grid.Row="1" 
                                 Grid.Column="1" 
                                 BorderColor="Black"
@@ -209,7 +209,7 @@
                                 Text="Trocar"
                                 FontSize="Small"
                                 Command="{Binding SelecionaMemoriaCommand}"
-                                Margin="5,0,0,0" 
+                                Margin="5,2,0,0" 
                                 Padding="0,0,0,0"/>
                     </Grid>
                 </StackLayout>
