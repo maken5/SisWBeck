@@ -6,11 +6,12 @@ namespace SisWBeck.Views;
 
 public partial class MainPage : ContentPage
 {
-
+    MainViewModel viewModel;
     public MainPage(MainViewModel viewModel)
 	{
 		InitializeComponent();
 		BindingContext = viewModel;
+        this.viewModel = viewModel;
         //VerificaPermissoes();
     }
 
@@ -18,7 +19,9 @@ public partial class MainPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+        Task t = viewModel.UpdateLotesList();
         await VerificaPermissoes();
+        await t;
     }
 
 

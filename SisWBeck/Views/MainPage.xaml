@@ -4,6 +4,7 @@
 			 xmlns:vm="clr-namespace:SisWBeck.ViewModels"
              xmlns:mct="clr-namespace:CommunityToolkit.Maui.Behaviors;assembly=CommunityToolkit.Maui"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:modelo="clr-namespace:Modelo.Entidades;assembly=Modelo" 
 			 x:Class="SisWBeck.Views.MainPage"
              xmlns:dg="clr-namespace:Maui.DataGrid;assembly=Maui.DataGrid"
              Shell.BackgroundColor="Red"
@@ -16,15 +17,47 @@
         <Button Text="Configurações" Command="{Binding CmdConfiguracao}"/>
     </StackLayout>-->
 
-    <Grid BackgroundColor="White">
+    <Grid >
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
-        <dg:DataGrid Grid.Row="0" 
-                     BackgroundColor="White"
+        <ListView Grid.Row="0"
+                  ItemsSource="{x:Binding Lotes}"
+                  SelectedItem="{Binding Lote}"
+                  RowHeight="60"
+                  SelectionMode="Single">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="modelo:Lotes">
+                    <ViewCell >
+                        <!-- BackgroundColor="{Binding .,Converter={StaticResource IndexToColorConverter},ConverterParameter={x:Reference Name=listaPesagens}}" -->
+                        <StackLayout Orientation="Horizontal"
+                                                 FlowDirection="LeftToRight"
+                                                 VerticalOptions="Center">
+                            <StackLayout HorizontalOptions="StartAndExpand"
+                                                     VerticalOptions="Center">
+                                <Label Text="{Binding Nome}"
+                                                   VerticalOptions="Center"
+                                                   FontSize="Medium"
+                                                   FontAttributes="Bold"
+                                                   TextColor="Black"/>
+                                <FlexLayout VerticalOptions="Center">
+                                    <Label Text="Data: "
+                                                       VerticalOptions="Center"
+                                                       TextColor="Gray"/>
+                                    <Label Text="{Binding Data}"
+                                                       VerticalOptions="Center"
+                                                       TextColor="Gray"/>
+                                </FlexLayout>
+                            </StackLayout>
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <!--<dg:DataGrid Grid.Row="0"
                      ItemsSource="{Binding Lotes}" 
-                     SelectionEnabled="True"
+                     SelectionEnabled="True" BackgroundColor="LightGray"
                      SelectedItem="{Binding Lote}">
             <dg:DataGrid.Columns>
                 <dg:DataGridColumn Title="Lote" 
@@ -36,7 +69,7 @@
                                    Width="20*" 
                                    SortingEnabled="True"/>
             </dg:DataGrid.Columns>
-        </dg:DataGrid>
+        </dg:DataGrid>-->
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>

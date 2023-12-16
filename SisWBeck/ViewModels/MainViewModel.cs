@@ -18,6 +18,13 @@ public partial class MainViewModel : BaseViewModel
         this.share = share; 
     }
 
+
+    public async Task UpdateLotesList()
+    {
+        this.Lotes = await context.Lotes.ToListAsync();
+        this.Lote = null;
+    }
+
     [RelayCommand]
     public async Task AdicionarLote()
     {
@@ -27,10 +34,11 @@ public partial class MainViewModel : BaseViewModel
             Lotes l = new Lotes() { Nome = lote };
             context.Add(l);
             await context.SaveChangesAsync();
-            OnPropertyChanged(nameof(Lotes));
-            OnPropertyChanged(nameof(Lote));
+            await UpdateLotesList();
         }
     }
+
+
 
     [RelayCommand]
     public async Task RemoverLote()
@@ -150,15 +158,8 @@ public partial class MainViewModel : BaseViewModel
         return file;
     }
 
-
-
-    public List<Lotes> Lotes
-    {
-        get
-        {
-            return context.Lotes.ToList();
-        }
-    }
+    [ObservableProperty]
+    private List<Lotes> lotes;
 
     [ObservableProperty]
     private Lotes lote;
