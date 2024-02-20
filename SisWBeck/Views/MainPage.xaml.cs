@@ -24,11 +24,6 @@ public partial class MainPage : ContentPage
         await t;
     }
 
-
-
-
-
-
     private async Task<bool> VerificaPermissao<T>() where T : Permissions.BasePermission, new()
     {
         var check = await Permissions.CheckStatusAsync<T>();

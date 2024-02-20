@@ -11,8 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Modelo", "Core\Modelo\Model
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MKDComm", "Core\MKDComm\MKDComm.csproj", "{57EA42FF-99D0-4F21-B993-6903E172E8C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibHash", "Core\LibHash\LibHash.csproj", "{A3607D97-C252-4350-A840-82CEE0A101A9}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,10 +31,6 @@ Global
 		{57EA42FF-99D0-4F21-B993-6903E172E8C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{57EA42FF-99D0-4F21-B993-6903E172E8C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{57EA42FF-99D0-4F21-B993-6903E172E8C5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A3607D97-C252-4350-A840-82CEE0A101A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A3607D97-C252-4350-A840-82CEE0A101A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A3607D97-C252-4350-A840-82CEE0A101A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A3607D97-C252-4350-A840-82CEE0A101A9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -44,7 +38,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{C6611531-9B78-4968-AAF9-C147E248B359} = {957347DF-B7BF-41C3-A024-36BB49D5475F}
 		{57EA42FF-99D0-4F21-B993-6903E172E8C5} = {957347DF-B7BF-41C3-A024-36BB49D5475F}
-		{A3607D97-C252-4350-A840-82CEE0A101A9} = {957347DF-B7BF-41C3-A024-36BB49D5475F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {333D82C1-1512-4D0D-A051-580590D86EDF}
