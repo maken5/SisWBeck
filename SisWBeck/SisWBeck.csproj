@@ -128,6 +128,7 @@
 	  <AndroidSigningStorePass>Aza2000</AndroidSigningStorePass>
 	  <AndroidSigningKeyAlias>wbeck</AndroidSigningKeyAlias>
 	  <AndroidSigningKeyPass>Aza2000</AndroidSigningKeyPass>
+	  <RunAOTCompilation>False</RunAOTCompilation>
 	</PropertyGroup>
 
 </Project>
